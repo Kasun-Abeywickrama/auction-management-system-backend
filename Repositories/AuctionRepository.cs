@@ -7,9 +7,9 @@ namespace AuctionManagementAPI.Repositories
 {
     public class AuctionRepository : IAuctionRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AuctionContext _context;
 
-        public AuctionRepository(ApplicationDbContext context)
+        public AuctionRepository(AuctionContext context)
         {
             _context = context;
         }

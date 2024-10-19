@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuctionManagementAPI.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class AuctionContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+        public AuctionContext(DbContextOptions<AuctionContext> options) : base(options) { }
 
         public DbSet<Auction> Auctions { get; set; }
         public DbSet<Bid> Bids { get; set; }
