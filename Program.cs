@@ -5,22 +5,28 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AuctionManagementAPI.Data;
 
+
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+
+// Register services for dependency injection
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<EmailService>();
+
 
 // Add DbContext
 builder.Services.AddDbContext<AuctionContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register TokenService for dependency injection
-builder.Services.AddScoped<TokenService>();
 
-// Register EmailService for dependency injection
-builder.Services.AddScoped<EmailService>();
-
-// Add Authentication
+// Add Authentication and Authorization
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -39,22 +45,24 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
-
 builder.Services.AddAuthorization();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
+
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
 
 app.Run();
