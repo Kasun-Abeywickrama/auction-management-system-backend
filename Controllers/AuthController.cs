@@ -53,11 +53,35 @@ namespace AuctionManagementAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("RegenerateOtp")]
-        public async Task<IActionResult> RegenerateOtp([FromBody] RegenerateOtpDTO regenerateOtpDTO)
+        [HttpPost("GenerateOtp")]
+        public async Task<IActionResult> GenerateOtp([FromBody] GenerateOtpDTO generateOtpDTO)
         {
-            var result = await _authService.RegenerateOtpAsync(regenerateOtpDTO);
+            var result = await _authService.GenerateOtpAsync(generateOtpDTO);
             if (result.Contains("New OTP has been sent"))
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        // Forgot password
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO forgotPasswordDTO)
+        {
+            var result = await _authService.ForgotPasswordAsync(forgotPasswordDTO);
+            if (result.Contains("An email has been sent to your email address with the OTP."))
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        // Reset password
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordDTO)
+        {
+            var result = await _authService.ResetPasswordAsync(resetPasswordDTO);
+            if (result.Contains("Password reset successfully."))
             {
                 return Ok(result);
             }

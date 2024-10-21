@@ -117,9 +117,9 @@ namespace AuctionManagementAPI.Services
 
         }
 
-        public async Task<string> RegenerateOtpAsync(RegenerateOtpDTO regenerateOtpDTO)
+        public async Task<string> GenerateOtpAsync(GenerateOtpDTO generateOtpDTO)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == regenerateOtpDTO.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == generateOtpDTO.Email);
             if (user == null)
             {
                 return "User not found.";
@@ -155,5 +155,69 @@ namespace AuctionManagementAPI.Services
             _emailService.SendOtpEmail(user.Email, otpCode);
             return "New OTP has been sent to your email.";
         }
+
+        public async Task<string> ForgotPasswordAsync(ForgotPasswordDTO forgotPasswordDTO)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == forgotPasswordDTO.Email);
+            if (user == null)
+            {
+                return "User not found.";
+            }
+
+            string otpCode = new Random().Next(100000, 999999).ToString();
+            var otp = new Otp
+            {
+                OtpType = "Password Reset",
+                OtpCode = otpCode,
+                GeneratedAt = DateTime.Now,
+                ExpiresAt = DateTime.Now.AddMinutes(10),
+                IsUsed = false,
+                UserId = user.UserId,
+                User = user
+            };
+
+            _context.Otps.Add(otp);
+            await _context.SaveChangesAsync();
+
+            _emailService.SendOtpEmail(user.Email, otpCode);
+            return "An email has been sent to your email address with the OTP.";
+        }
+    
+        public async Task<string> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == resetPasswordDTO.Email);
+            if (user == null)
+            {
+                return "User not found.";
+            }
+
+            var otp = _context.Otps.FirstOrDefault(o => o.UserId == user.UserId && o.OtpCode == resetPasswordDTO.OtpCode && !o.IsUsed && o.ExpiresAt > DateTime.Now);
+
+            if (otp == null)
+            {
+                return "Invalid OTP.";
+            }
+
+            // Check if the NewPassword is the same as the ConfirmPassword
+            if (resetPasswordDTO.NewPassword != resetPasswordDTO.ConfirmPassword)
+            {
+                return "Passwords do not match.";
+            }
+
+            string salt;
+            string hashedPassword = _tokenService.HashPassword(resetPasswordDTO.NewPassword, out salt);
+
+            user.Password = hashedPassword;
+            user.PasswordSalt = salt;
+            _context.Users.Update(user);
+
+            otp.IsUsed = true;
+            _context.Otps.Update(otp);
+
+            await _context.SaveChangesAsync();
+
+            return "Password reset successfully.";
+        }
+
     }
 }
