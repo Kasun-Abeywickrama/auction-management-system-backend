@@ -1,7 +1,9 @@
 ﻿using AuctionManagementAPI.Models;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace AuctionManagementAPI.Services
@@ -36,5 +38,43 @@ namespace AuctionManagementAPI.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+
+
+        public string HashPassword(string password, out string salt)
+        {
+            byte[] saltBytes = new byte[128 / 8];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(saltBytes);
+            }
+
+            salt = Convert.ToBase64String(saltBytes);
+            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password,
+                salt: saltBytes,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 10000,
+                numBytesRequested: 256 / 8));
+            return hashed;
+        }
+
+
+
+        // Method to hash a password with a provided salt
+        public string HashPasswordWithSalt(string password, string salt)
+        {
+            byte[] saltBytes = Convert.FromBase64String(salt);
+            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password,
+                salt: saltBytes,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 10000,
+                numBytesRequested: 256 / 8));
+            return hashed;
+        }
+
+
+
     }
 }

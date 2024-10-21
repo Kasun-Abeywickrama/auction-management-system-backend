@@ -17,6 +17,9 @@ builder.Services.AddDbContext<AuctionContext>(options =>
 // Register TokenService for dependency injection
 builder.Services.AddScoped<TokenService>();
 
+// Register EmailService for dependency injection
+builder.Services.AddScoped<EmailService>();
+
 // Add Authentication
 builder.Services.AddAuthentication(options =>
 {
