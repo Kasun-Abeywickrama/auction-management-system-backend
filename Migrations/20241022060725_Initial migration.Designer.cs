@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuctionManagementAPI.Migrations
 {
     [DbContext(typeof(AuctionContext))]
-    [Migration("20241021135445_Add isVerify attibute to the User Table")]
-    partial class AddisVerifyattibutetotheUserTable
+    [Migration("20241022060725_Initial migration")]
+    partial class Initialmigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,12 +30,12 @@ namespace AuctionManagementAPI.Migrations
                     b.Property<int>("AuctionsAuctionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("LablesLabelId")
+                    b.Property<int>("LablesLableId")
                         .HasColumnType("int");
 
-                    b.HasKey("AuctionsAuctionId", "LablesLabelId");
+                    b.HasKey("AuctionsAuctionId", "LablesLableId");
 
-                    b.HasIndex("LablesLabelId");
+                    b.HasIndex("LablesLableId");
 
                     b.ToTable("AuctionLables", (string)null);
                 });
@@ -103,11 +103,11 @@ namespace AuctionManagementAPI.Migrations
 
             modelBuilder.Entity("AuctionManagementAPI.Models.AuctionSchedule", b =>
                 {
-                    b.Property<int>("ActionScheduleId")
+                    b.Property<int>("AuctionScheduleId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActionScheduleId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuctionScheduleId"));
 
                     b.Property<int>("AuctionId")
                         .HasColumnType("int");
@@ -124,7 +124,7 @@ namespace AuctionManagementAPI.Migrations
                     b.Property<DateTime>("ScheduledStartTime")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ActionScheduleId");
+                    b.HasKey("AuctionScheduleId");
 
                     b.HasIndex("AuctionId")
                         .IsUnique();
@@ -188,11 +188,11 @@ namespace AuctionManagementAPI.Migrations
 
             modelBuilder.Entity("AuctionManagementAPI.Models.Lable", b =>
                 {
-                    b.Property<int>("LabelId")
+                    b.Property<int>("LableId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LabelId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LableId"));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -201,7 +201,7 @@ namespace AuctionManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("LabelId");
+                    b.HasKey("LableId");
 
                     b.ToTable("Lables");
                 });
@@ -458,6 +458,19 @@ namespace AuctionManagementAPI.Migrations
                     b.HasIndex("UserRoleId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            Email = "admin@lansuwa.com",
+                            FirstName = "Admin",
+                            IsVerified = true,
+                            LastName = "User",
+                            Password = "KtmYrvqbhm6PbytrQiY/e/StPH2XqMJNk4KVer4+AaY=",
+                            PasswordSalt = "T2NxIwaC6pQOcB5Z6C19rQ==",
+                            UserRoleId = 1
+                        });
                 });
 
             modelBuilder.Entity("AuctionManagementAPI.Models.UserProfile", b =>
@@ -503,6 +516,18 @@ namespace AuctionManagementAPI.Migrations
                     b.HasKey("UserRoleId");
 
                     b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserRoleId = 1,
+                            Role = "admin"
+                        },
+                        new
+                        {
+                            UserRoleId = 2,
+                            Role = "buyer"
+                        });
                 });
 
             modelBuilder.Entity("PermissionUserRole", b =>
@@ -530,7 +555,7 @@ namespace AuctionManagementAPI.Migrations
 
                     b.HasOne("AuctionManagementAPI.Models.Lable", null)
                         .WithMany()
-                        .HasForeignKey("LablesLabelId")
+                        .HasForeignKey("LablesLableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

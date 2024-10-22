@@ -141,6 +141,29 @@ namespace AuctionManagementAPI.Data
                 .WithOne(o => o.User)
                 .HasForeignKey(o => o.UserId);
 
+
+
+            // Seed the buyer and admin roles
+            modelBuilder.Entity<UserRole>().HasData(
+                new UserRole { UserRoleId = 1, Role = "admin" },
+                new UserRole { UserRoleId = 2, Role = "buyer" }
+            );
+
+            // Seed an admin user with pre-hashed password and salt
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    UserId = 1,
+                    FirstName = "Admin",
+                    LastName = "User",
+                    Email = "admin@lansuwa.com",
+                    Password = "KtmYrvqbhm6PbytrQiY/e/StPH2XqMJNk4KVer4+AaY=", //lansuwa123
+                    PasswordSalt = "T2NxIwaC6pQOcB5Z6C19rQ==", 
+                    UserRoleId = 1,  // admin role
+                    IsVerified = true  // Already verified
+                }
+            );
+
         }
     }
 

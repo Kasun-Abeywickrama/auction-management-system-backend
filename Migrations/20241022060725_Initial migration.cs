@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace AuctionManagementAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigrationwithallstartingModels : Migration
+    public partial class Initialmigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,14 +37,14 @@ namespace AuctionManagementAPI.Migrations
                 name: "Lables",
                 columns: table => new
                 {
-                    LabelId = table.Column<int>(type: "int", nullable: false)
+                    LableId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Lables", x => x.LabelId);
+                    table.PrimaryKey("PK_Lables", x => x.LableId);
                 });
 
             migrationBuilder.CreateTable(
@@ -130,6 +132,7 @@ namespace AuctionManagementAPI.Migrations
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordSalt = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsVerified = table.Column<bool>(type: "bit", nullable: false),
                     UserRoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -285,11 +288,11 @@ namespace AuctionManagementAPI.Migrations
                 columns: table => new
                 {
                     AuctionsAuctionId = table.Column<int>(type: "int", nullable: false),
-                    LablesLabelId = table.Column<int>(type: "int", nullable: false)
+                    LablesLableId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AuctionLables", x => new { x.AuctionsAuctionId, x.LablesLabelId });
+                    table.PrimaryKey("PK_AuctionLables", x => new { x.AuctionsAuctionId, x.LablesLableId });
                     table.ForeignKey(
                         name: "FK_AuctionLables_Auctions_AuctionsAuctionId",
                         column: x => x.AuctionsAuctionId,
@@ -297,10 +300,10 @@ namespace AuctionManagementAPI.Migrations
                         principalColumn: "AuctionId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AuctionLables_Lables_LablesLabelId",
-                        column: x => x.LablesLabelId,
+                        name: "FK_AuctionLables_Lables_LablesLableId",
+                        column: x => x.LablesLableId,
                         principalTable: "Lables",
-                        principalColumn: "LabelId",
+                        principalColumn: "LableId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -308,7 +311,7 @@ namespace AuctionManagementAPI.Migrations
                 name: "auctionSchedules",
                 columns: table => new
                 {
-                    ActionScheduleId = table.Column<int>(type: "int", nullable: false)
+                    AuctionScheduleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ScheduledStartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ScheduledEndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -318,7 +321,7 @@ namespace AuctionManagementAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_auctionSchedules", x => x.ActionScheduleId);
+                    table.PrimaryKey("PK_auctionSchedules", x => x.AuctionScheduleId);
                     table.ForeignKey(
                         name: "FK_auctionSchedules_Auctions_AuctionId",
                         column: x => x.AuctionId,
@@ -413,15 +416,29 @@ namespace AuctionManagementAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "UserRoles",
+                columns: new[] { "UserRoleId", "Role" },
+                values: new object[,]
+                {
+                    { 1, "admin" },
+                    { 2, "buyer" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "UserId", "Email", "FirstName", "IsVerified", "LastLogin", "LastName", "Password", "PasswordSalt", "UserRoleId" },
+                values: new object[] { 1, "admin@lansuwa.com", "Admin", true, null, "User", "KtmYrvqbhm6PbytrQiY/e/StPH2XqMJNk4KVer4+AaY=", "T2NxIwaC6pQOcB5Z6C19rQ==", 1 });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ActivityLogs_UserId",
                 table: "ActivityLogs",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AuctionLables_LablesLabelId",
+                name: "IX_AuctionLables_LablesLableId",
                 table: "AuctionLables",
-                column: "LablesLabelId");
+                column: "LablesLableId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Auctions_ProductId",

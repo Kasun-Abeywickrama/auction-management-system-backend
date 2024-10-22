@@ -5,7 +5,7 @@ namespace AuctionManagementAPI.Models
     public class Lable
     {
         [Key]
-        public int LabelId { get; set; }
+        public int LableId { get; set; }
         public required string Name { get; set; }
 
         public string? Description { get; set; }
