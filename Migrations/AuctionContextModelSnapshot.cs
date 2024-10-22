@@ -426,6 +426,9 @@ namespace AuctionManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("FailedLoginAttempts")
+                        .HasColumnType("int");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -461,6 +464,7 @@ namespace AuctionManagementAPI.Migrations
                         {
                             UserId = 1,
                             Email = "admin@lansuwa.com",
+                            FailedLoginAttempts = 0,
                             FirstName = "Admin",
                             IsVerified = true,
                             LastName = "User",

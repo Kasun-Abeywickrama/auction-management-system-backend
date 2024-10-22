@@ -1,4 +1,6 @@
-﻿namespace AuctionManagementAPI.Models.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AuctionManagementAPI.Models.DTOs
 {
     public class LoginDto
     {

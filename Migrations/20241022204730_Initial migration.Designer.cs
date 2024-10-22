@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuctionManagementAPI.Migrations
 {
     [DbContext(typeof(AuctionContext))]
-    [Migration("20241022060725_Initial migration")]
+    [Migration("20241022204730_Initial migration")]
     partial class Initialmigration
     {
         /// <inheritdoc />
@@ -429,6 +429,9 @@ namespace AuctionManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("FailedLoginAttempts")
+                        .HasColumnType("int");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -464,6 +467,7 @@ namespace AuctionManagementAPI.Migrations
                         {
                             UserId = 1,
                             Email = "admin@lansuwa.com",
+                            FailedLoginAttempts = 0,
                             FirstName = "Admin",
                             IsVerified = true,
                             LastName = "User",

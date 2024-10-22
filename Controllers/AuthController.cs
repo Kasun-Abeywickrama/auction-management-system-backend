@@ -53,10 +53,10 @@ namespace AuctionManagementAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("GenerateOtp")]
-        public async Task<IActionResult> GenerateOtp([FromBody] GenerateOtpDTO generateOtpDTO)
+        [HttpPost("ReGenerateOtp")]
+        public async Task<IActionResult> ReGenerateOtp([FromBody] GenerateOtpDTO generateOtpDTO)
         {
-            var result = await _authService.GenerateOtpAsync(generateOtpDTO);
+            var result = await _authService.ReGenerateOtpAsync(generateOtpDTO);
             if (result.Contains("New OTP has been sent"))
             {
                 return Ok(result);
@@ -64,11 +64,11 @@ namespace AuctionManagementAPI.Controllers
             return BadRequest(result);
         }
 
-        // Forgot password
-        [HttpPost("ForgotPassword")]
-        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO forgotPasswordDTO)
+        // Request to reset password and use Forgot password also.
+        [HttpPost("ResetPasswordRequest")]
+        public async Task<IActionResult> ResetPasswordRequest([FromBody] ResetPasswordRequestDTO resetPasswordRequestDTO)
         {
-            var result = await _authService.ForgotPasswordAsync(forgotPasswordDTO);
+            var result = await _authService.ResetPasswordRequestAsync(resetPasswordRequestDTO);
             if (result.Contains("An email has been sent to your email address with the OTP."))
             {
                 return Ok(result);
@@ -78,7 +78,7 @@ namespace AuctionManagementAPI.Controllers
 
         // Reset password
         [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordDTO)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordOtpDTO resetPasswordDTO)
         {
             var result = await _authService.ResetPasswordAsync(resetPasswordDTO);
             if (result.Contains("Password reset successfully."))

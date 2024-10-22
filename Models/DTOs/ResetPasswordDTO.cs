@@ -1,6 +1,6 @@
 ﻿namespace AuctionManagementAPI.Models.DTOs
 {
-    public class ResetPasswordDTO
+    public class ResetPasswordOtpDTO
 
     {
         public required string Email { get; set; }

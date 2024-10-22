@@ -19,24 +19,59 @@ namespace AuctionManagementAPI.Services
             _emailService = emailService;
         }
 
-        public async Task<User?> LoginAsync(LoginDto loginDto)
+        public async Task<User?> LoginAsync(LoginDto loginDTO)
         {
+            // check if user exists
             var user = await _context.Users
                 .Include(u => u.UserRole)
-                .FirstOrDefaultAsync(u => u.Email == loginDto.Email);
+                .FirstOrDefaultAsync(u => u.Email == loginDTO.Email);
 
+            // if user is not found or not verified, return null
             if (user == null || !user.IsVerified)
             {
                 return null;
             }
 
-            // update last login date
+            // hash the incoming password
+            string hashedPassword = _tokenService.HashPasswordWithSalt(loginDTO.Password, user.PasswordSalt);
+
+            // check if password is correct with the hashed password
+            if (hashedPassword != user.Password)
+            {
+                // increment failed login attempts
+                user.FailedLoginAttempts += 1;
+
+                // if failed login attempts is 5, lock the account
+                if (user.FailedLoginAttempts >= 5)
+                {
+                    user.IsVerified = false;
+
+                    // send email to user
+                    _emailService.SendAccountLockedEmail(user.Email);
+                }
+
+                // update the user
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+
+                return null;
+
+            }
+
+            // update last login date and reset failed login attempts for successful login
             user.LastLogin = DateTime.Now;
+
+            // reset failed login attempts
+            if (user.FailedLoginAttempts > 0)
+            {
+                user.FailedLoginAttempts = 0;
+            }
+
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
-            string hashedPassword = _tokenService.HashPasswordWithSalt(loginDto.Password, user.PasswordSalt);
-            return hashedPassword == user.Password ? user : null;
+            return user;
+
         }
 
         public async Task<string> RegisterAsync(RegisterUserDTO registerUserDTO)
@@ -117,7 +152,7 @@ namespace AuctionManagementAPI.Services
 
         }
 
-        public async Task<string> GenerateOtpAsync(GenerateOtpDTO generateOtpDTO)
+        public async Task<string> ReGenerateOtpAsync(GenerateOtpDTO generateOtpDTO)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == generateOtpDTO.Email);
             if (user == null)
@@ -140,7 +175,7 @@ namespace AuctionManagementAPI.Services
             string otpCode = new Random().Next(100000, 999999).ToString();
             var newOtp = new Otp
             {
-                OtpType = "Email Verification",
+                OtpType = "Re-Sent OTP",
                 OtpCode = otpCode,
                 GeneratedAt = DateTime.Now,
                 ExpiresAt = DateTime.Now.AddMinutes(10),
@@ -156,9 +191,9 @@ namespace AuctionManagementAPI.Services
             return "New OTP has been sent to your email.";
         }
 
-        public async Task<string> ForgotPasswordAsync(ForgotPasswordDTO forgotPasswordDTO)
+        public async Task<string> ResetPasswordRequestAsync(ResetPasswordRequestDTO resetPasswordRequestDTO)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == forgotPasswordDTO.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == resetPasswordRequestDTO.Email);
             if (user == null)
             {
                 return "User not found.";
@@ -167,7 +202,7 @@ namespace AuctionManagementAPI.Services
             string otpCode = new Random().Next(100000, 999999).ToString();
             var otp = new Otp
             {
-                OtpType = "Password Reset",
+                OtpType = "OTP for Password Reset",
                 OtpCode = otpCode,
                 GeneratedAt = DateTime.Now,
                 ExpiresAt = DateTime.Now.AddMinutes(10),
@@ -183,7 +218,7 @@ namespace AuctionManagementAPI.Services
             return "An email has been sent to your email address with the OTP.";
         }
     
-        public async Task<string> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO)
+        public async Task<string> ResetPasswordAsync(ResetPasswordOtpDTO resetPasswordDTO)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == resetPasswordDTO.Email);
             if (user == null)

@@ -133,6 +133,7 @@ namespace AuctionManagementAPI.Migrations
                     PasswordSalt = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsVerified = table.Column<bool>(type: "bit", nullable: false),
+                    FailedLoginAttempts = table.Column<int>(type: "int", nullable: false),
                     UserRoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -427,8 +428,8 @@ namespace AuctionManagementAPI.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "Email", "FirstName", "IsVerified", "LastLogin", "LastName", "Password", "PasswordSalt", "UserRoleId" },
-                values: new object[] { 1, "admin@lansuwa.com", "Admin", true, null, "User", "KtmYrvqbhm6PbytrQiY/e/StPH2XqMJNk4KVer4+AaY=", "T2NxIwaC6pQOcB5Z6C19rQ==", 1 });
+                columns: new[] { "UserId", "Email", "FailedLoginAttempts", "FirstName", "IsVerified", "LastLogin", "LastName", "Password", "PasswordSalt", "UserRoleId" },
+                values: new object[] { 1, "admin@lansuwa.com", 0, "Admin", true, null, "User", "KtmYrvqbhm6PbytrQiY/e/StPH2XqMJNk4KVer4+AaY=", "T2NxIwaC6pQOcB5Z6C19rQ==", 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ActivityLogs_UserId",
