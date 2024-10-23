@@ -1,7 +1,10 @@
-﻿using AuctionManagementAPI.Models.DTOs.AuthDTOs;
+﻿using AuctionManagementAPI.Attributes;
+using AuctionManagementAPI.Models.DTOs.AuthDTOs;
 using AuctionManagementAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
 
 namespace AuctionManagementAPI.Controllers
 {
@@ -163,8 +166,18 @@ namespace AuctionManagementAPI.Controllers
         // Get all permissions
         [Authorize]
         [HttpGet("GetPermissions")]
+        [HasPermission("to_get_all_permissions")]
         public async Task<IActionResult> GetPermissions()
         {
+
+            // Extract UserId and Role from token claims
+            var userId = User.FindFirstValue("UserId");
+            var role = User.FindFirstValue("Role");
+
+            // print the userId and role to the console
+            Console.WriteLine("UserId: " + userId);
+            Console.WriteLine("Role: " + role);
+
             var result = await _authService.GetPermissionsAsync();
             if (result != null)
             {

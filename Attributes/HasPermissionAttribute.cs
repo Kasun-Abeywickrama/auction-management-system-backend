@@ -1,35 +1,51 @@
-﻿using AuctionManagementAPI.Models;
-using AuctionManagementAPI.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using AuctionManagementAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
+using System.Security.Claims;
 
 namespace AuctionManagementAPI.Attributes
 {
-    public class HasPermissionAttribute : TypeFilterAttribute
-    {
-        public HasPermissionAttribute(string permission) : base(typeof(HasPermissionFilter))
-        {
-            Arguments = new object[] { permission };
-        }
-    }
-
-    public class HasPermissionFilter : IAuthorizationFilter
+    public class HasPermissionAttribute : AuthorizeAttribute, IAuthorizationFilter
     {
         private readonly string _permission;
-        private readonly PermissionService _permissionService;
 
-        public HasPermissionFilter(string permission, PermissionService permissionService)
+        public HasPermissionAttribute(string permission)
         {
             _permission = permission;
-            _permissionService = permissionService;
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var user = (User)context.HttpContext.Items["User"];
-            if (!_permissionService.HasPermission(user, _permission))
+            // Check if the user is authenticated
+            if (!context.HttpContext.User.Identity.IsAuthenticated)
             {
-                context.Result = new ForbidResult();
+                context.Result = new Microsoft.AspNetCore.Mvc.ForbidResult();
+                return;
+            }
+
+            // Get UserId from claims
+            var userId = context.HttpContext.User.FindFirstValue("UserId");
+            var userRole = context.HttpContext.User.FindFirstValue("Role");
+
+            // print the user's role to the console
+            System.Console.WriteLine($"User Role: {userRole}");
+
+            // if this user's role is admin give the access anyway.
+            if (userRole == "admin")
+            {
+                return;
+            }
+
+
+            // Fetch the user's permissions from the database
+            var permissionService = context.HttpContext.RequestServices.GetService<PermissionService>();
+            var hasPermission = permissionService.UserHasPermission(userId, _permission);
+
+            if (!hasPermission)
+            {
+                context.Result = new Microsoft.AspNetCore.Mvc.ForbidResult();
             }
         }
     }
