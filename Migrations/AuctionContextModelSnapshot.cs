@@ -27,12 +27,12 @@ namespace AuctionManagementAPI.Migrations
                     b.Property<int>("AuctionsAuctionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("LablesLabelId")
+                    b.Property<int>("LablesLableId")
                         .HasColumnType("int");
 
-                    b.HasKey("AuctionsAuctionId", "LablesLabelId");
+                    b.HasKey("AuctionsAuctionId", "LablesLableId");
 
-                    b.HasIndex("LablesLabelId");
+                    b.HasIndex("LablesLableId");
 
                     b.ToTable("AuctionLables", (string)null);
                 });
@@ -100,11 +100,11 @@ namespace AuctionManagementAPI.Migrations
 
             modelBuilder.Entity("AuctionManagementAPI.Models.AuctionSchedule", b =>
                 {
-                    b.Property<int>("ActionScheduleId")
+                    b.Property<int>("AuctionScheduleId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ActionScheduleId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuctionScheduleId"));
 
                     b.Property<int>("AuctionId")
                         .HasColumnType("int");
@@ -121,7 +121,7 @@ namespace AuctionManagementAPI.Migrations
                     b.Property<DateTime>("ScheduledStartTime")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ActionScheduleId");
+                    b.HasKey("AuctionScheduleId");
 
                     b.HasIndex("AuctionId")
                         .IsUnique();
@@ -185,11 +185,11 @@ namespace AuctionManagementAPI.Migrations
 
             modelBuilder.Entity("AuctionManagementAPI.Models.Lable", b =>
                 {
-                    b.Property<int>("LabelId")
+                    b.Property<int>("LableId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LabelId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LableId"));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -198,7 +198,7 @@ namespace AuctionManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("LabelId");
+                    b.HasKey("LableId");
 
                     b.ToTable("Lables");
                 });
@@ -326,6 +326,408 @@ namespace AuctionManagementAPI.Migrations
                     b.HasKey("PermissionId");
 
                     b.ToTable("Permissions");
+
+                    b.HasData(
+                        new
+                        {
+                            PermissionId = 1,
+                            Name = "to_create_auction"
+                        },
+                        new
+                        {
+                            PermissionId = 2,
+                            Name = "to_update_auction"
+                        },
+                        new
+                        {
+                            PermissionId = 3,
+                            Name = "to_delete_auction"
+                        },
+                        new
+                        {
+                            PermissionId = 4,
+                            Name = "to_get_all_auctions"
+                        },
+                        new
+                        {
+                            PermissionId = 5,
+                            Name = "to_get_auction_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 6,
+                            Name = "to_create_bid"
+                        },
+                        new
+                        {
+                            PermissionId = 7,
+                            Name = "to_update_bid"
+                        },
+                        new
+                        {
+                            PermissionId = 8,
+                            Name = "to_delete_bid"
+                        },
+                        new
+                        {
+                            PermissionId = 9,
+                            Name = "to_get_all_bids"
+                        },
+                        new
+                        {
+                            PermissionId = 10,
+                            Name = "to_get_bid_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 11,
+                            Name = "to_create_auction_schedule"
+                        },
+                        new
+                        {
+                            PermissionId = 12,
+                            Name = "to_update_auction_schedule"
+                        },
+                        new
+                        {
+                            PermissionId = 13,
+                            Name = "to_delete_auction_schedule"
+                        },
+                        new
+                        {
+                            PermissionId = 14,
+                            Name = "to_get_all_auction_schedules"
+                        },
+                        new
+                        {
+                            PermissionId = 15,
+                            Name = "to_get_auction_schedule_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 16,
+                            Name = "to_create_lable"
+                        },
+                        new
+                        {
+                            PermissionId = 17,
+                            Name = "to_update_lable"
+                        },
+                        new
+                        {
+                            PermissionId = 18,
+                            Name = "to_delete_lable"
+                        },
+                        new
+                        {
+                            PermissionId = 19,
+                            Name = "to_get_all_lables"
+                        },
+                        new
+                        {
+                            PermissionId = 20,
+                            Name = "to_get_lable_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 21,
+                            Name = "to_create_product"
+                        },
+                        new
+                        {
+                            PermissionId = 22,
+                            Name = "to_update_product"
+                        },
+                        new
+                        {
+                            PermissionId = 23,
+                            Name = "to_delete_product"
+                        },
+                        new
+                        {
+                            PermissionId = 24,
+                            Name = "to_get_all_products"
+                        },
+                        new
+                        {
+                            PermissionId = 25,
+                            Name = "to_get_product_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 26,
+                            Name = "to_create_payment"
+                        },
+                        new
+                        {
+                            PermissionId = 27,
+                            Name = "to_update_payment"
+                        },
+                        new
+                        {
+                            PermissionId = 28,
+                            Name = "to_delete_payment"
+                        },
+                        new
+                        {
+                            PermissionId = 29,
+                            Name = "to_get_all_payments"
+                        },
+                        new
+                        {
+                            PermissionId = 30,
+                            Name = "to_get_payment_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 31,
+                            Name = "to_create_category"
+                        },
+                        new
+                        {
+                            PermissionId = 32,
+                            Name = "to_update_category"
+                        },
+                        new
+                        {
+                            PermissionId = 33,
+                            Name = "to_delete_category"
+                        },
+                        new
+                        {
+                            PermissionId = 34,
+                            Name = "to_get_all_categories"
+                        },
+                        new
+                        {
+                            PermissionId = 35,
+                            Name = "to_get_category_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 36,
+                            Name = "to_create_transaction"
+                        },
+                        new
+                        {
+                            PermissionId = 37,
+                            Name = "to_update_transaction"
+                        },
+                        new
+                        {
+                            PermissionId = 38,
+                            Name = "to_delete_transaction"
+                        },
+                        new
+                        {
+                            PermissionId = 39,
+                            Name = "to_get_all_transactions"
+                        },
+                        new
+                        {
+                            PermissionId = 40,
+                            Name = "to_get_transaction_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 41,
+                            Name = "to_create_user"
+                        },
+                        new
+                        {
+                            PermissionId = 42,
+                            Name = "to_update_user"
+                        },
+                        new
+                        {
+                            PermissionId = 43,
+                            Name = "to_delete_user"
+                        },
+                        new
+                        {
+                            PermissionId = 44,
+                            Name = "to_get_all_users"
+                        },
+                        new
+                        {
+                            PermissionId = 45,
+                            Name = "to_get_user_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 46,
+                            Name = "to_create_report"
+                        },
+                        new
+                        {
+                            PermissionId = 47,
+                            Name = "to_update_report"
+                        },
+                        new
+                        {
+                            PermissionId = 48,
+                            Name = "to_delete_report"
+                        },
+                        new
+                        {
+                            PermissionId = 49,
+                            Name = "to_get_all_reports"
+                        },
+                        new
+                        {
+                            PermissionId = 50,
+                            Name = "to_get_report_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 51,
+                            Name = "to_create_user_role"
+                        },
+                        new
+                        {
+                            PermissionId = 52,
+                            Name = "to_update_user_role"
+                        },
+                        new
+                        {
+                            PermissionId = 53,
+                            Name = "to_delete_user_role"
+                        },
+                        new
+                        {
+                            PermissionId = 54,
+                            Name = "to_get_all_user_roles"
+                        },
+                        new
+                        {
+                            PermissionId = 55,
+                            Name = "to_get_user_role_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 56,
+                            Name = "to_create_permission"
+                        },
+                        new
+                        {
+                            PermissionId = 57,
+                            Name = "to_update_permission"
+                        },
+                        new
+                        {
+                            PermissionId = 58,
+                            Name = "to_delete_permission"
+                        },
+                        new
+                        {
+                            PermissionId = 59,
+                            Name = "to_get_all_permissions"
+                        },
+                        new
+                        {
+                            PermissionId = 60,
+                            Name = "to_get_permission_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 61,
+                            Name = "to_create_user_profile"
+                        },
+                        new
+                        {
+                            PermissionId = 62,
+                            Name = "to_update_user_profile"
+                        },
+                        new
+                        {
+                            PermissionId = 63,
+                            Name = "to_delete_user_profile"
+                        },
+                        new
+                        {
+                            PermissionId = 64,
+                            Name = "to_get_all_user_profiles"
+                        },
+                        new
+                        {
+                            PermissionId = 65,
+                            Name = "to_get_user_profile_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 66,
+                            Name = "to_create_notification"
+                        },
+                        new
+                        {
+                            PermissionId = 67,
+                            Name = "to_update_notification"
+                        },
+                        new
+                        {
+                            PermissionId = 68,
+                            Name = "to_delete_notification"
+                        },
+                        new
+                        {
+                            PermissionId = 69,
+                            Name = "to_get_all_notifications"
+                        },
+                        new
+                        {
+                            PermissionId = 70,
+                            Name = "to_get_notification_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 71,
+                            Name = "to_create_activity_log"
+                        },
+                        new
+                        {
+                            PermissionId = 72,
+                            Name = "to_update_activity_log"
+                        },
+                        new
+                        {
+                            PermissionId = 73,
+                            Name = "to_delete_activity_log"
+                        },
+                        new
+                        {
+                            PermissionId = 74,
+                            Name = "to_get_all_activity_logs"
+                        },
+                        new
+                        {
+                            PermissionId = 75,
+                            Name = "to_get_activity_log_by_id"
+                        },
+                        new
+                        {
+                            PermissionId = 76,
+                            Name = "to_create_otp"
+                        },
+                        new
+                        {
+                            PermissionId = 77,
+                            Name = "to_update_otp"
+                        },
+                        new
+                        {
+                            PermissionId = 78,
+                            Name = "to_delete_otp"
+                        },
+                        new
+                        {
+                            PermissionId = 79,
+                            Name = "to_get_all_otps"
+                        },
+                        new
+                        {
+                            PermissionId = 80,
+                            Name = "to_get_otp_by_id"
+                        });
                 });
 
             modelBuilder.Entity("AuctionManagementAPI.Models.Product", b =>
@@ -426,9 +828,15 @@ namespace AuctionManagementAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("FailedLoginAttempts")
+                        .HasColumnType("int");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastLogin")
                         .HasColumnType("datetime2");
@@ -452,6 +860,20 @@ namespace AuctionManagementAPI.Migrations
                     b.HasIndex("UserRoleId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            Email = "admin@lansuwa.com",
+                            FailedLoginAttempts = 0,
+                            FirstName = "Admin",
+                            IsVerified = true,
+                            LastName = "User",
+                            Password = "KtmYrvqbhm6PbytrQiY/e/StPH2XqMJNk4KVer4+AaY=",
+                            PasswordSalt = "T2NxIwaC6pQOcB5Z6C19rQ==",
+                            UserRoleId = 1
+                        });
                 });
 
             modelBuilder.Entity("AuctionManagementAPI.Models.UserProfile", b =>
@@ -497,6 +919,18 @@ namespace AuctionManagementAPI.Migrations
                     b.HasKey("UserRoleId");
 
                     b.ToTable("UserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserRoleId = 1,
+                            Role = "admin"
+                        },
+                        new
+                        {
+                            UserRoleId = 2,
+                            Role = "buyer"
+                        });
                 });
 
             modelBuilder.Entity("PermissionUserRole", b =>
@@ -524,7 +958,7 @@ namespace AuctionManagementAPI.Migrations
 
                     b.HasOne("AuctionManagementAPI.Models.Lable", null)
                         .WithMany()
-                        .HasForeignKey("LablesLabelId")
+                        .HasForeignKey("LablesLableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
