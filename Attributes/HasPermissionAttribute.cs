@@ -45,7 +45,11 @@ namespace AuctionManagementAPI.Attributes
 
             if (!hasPermission)
             {
-                context.Result = new Microsoft.AspNetCore.Mvc.ForbidResult();
+                //context.Result = new Microsoft.AspNetCore.Mvc.ForbidResult();
+
+                // send a 403 status code with th meaaage, you do not have permission to access this resource.
+                context.Result = new Microsoft.AspNetCore.Mvc.StatusCodeResult(403);
+
             }
         }
     }
