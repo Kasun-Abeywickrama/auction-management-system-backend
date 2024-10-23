@@ -19,6 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<ValidationService>();
 
 
 // Add DbContext
