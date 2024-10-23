@@ -14,6 +14,11 @@ namespace AuctionManagementAPI.Services
 
         public bool HasPermission(User user, string permissionName)
         {
+            // give any permission to the admin
+            if (user.UserRole.Role == "admin")
+            {
+                return true;
+            }
             return user.UserRole.Permissions.Any(p => p.Name == permissionName);
         }
     }

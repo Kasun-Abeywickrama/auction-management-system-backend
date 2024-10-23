@@ -1,6 +1,6 @@
 ﻿using AuctionManagementAPI.Data;
 using AuctionManagementAPI.Models;
-using AuctionManagementAPI.Models.DTOs;
+using AuctionManagementAPI.Models.DTOs.AuthDTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -252,6 +252,88 @@ namespace AuctionManagementAPI.Services
             await _context.SaveChangesAsync();
 
             return "Password reset successfully.";
+        }
+
+
+
+        // Role service functions to create, read, update and delete roles
+
+        // Create a new role
+        public async Task<string> CreateRoleAsync(CreateUserRoleDTO createUserRoleDTO)
+        {
+            var existingRole = _context.UserRoles.FirstOrDefault(r => r.Role == createUserRoleDTO.Role);
+            if (existingRole != null)
+            {
+                return "Role already exists.";
+            }
+
+            var newRole = new UserRole
+            {
+                Role = createUserRoleDTO.Role
+            };
+
+            _context.UserRoles.Add(newRole);
+            await _context.SaveChangesAsync();
+
+            return "Role created successfully.";
+        }
+
+
+        // Update a role by role id
+        public async Task<string> UpdateRoleAsync(UpdateUserRoleDTO updateUserRoleDTO)
+        {
+            var role = await _context.UserRoles.FirstOrDefaultAsync(r => r.UserRoleId == updateUserRoleDTO.UserRoleId);
+            if (role == null)
+            {
+                return "Role not found.";
+            }
+
+            role.Role = updateUserRoleDTO.Role;
+            _context.UserRoles.Update(role);
+            await _context.SaveChangesAsync();
+
+            return "Role updated successfully.";
+        }
+
+
+        // Delete a role by role id
+        public async Task<string> DeleteRoleAsync(DeleteUserRoleDTO deleteUserRoleDTO)
+        {
+            var role = await _context.UserRoles.FirstOrDefaultAsync(r => r.UserRoleId == deleteUserRoleDTO.UserRoleId);
+            if (role == null)
+            {
+                return "Role not found.";
+            }
+
+            _context.UserRoles.Remove(role);
+            await _context.SaveChangesAsync();
+
+            return "Role deleted successfully.";
+        }
+
+
+        // Get all roles
+        public async Task<List<UserRole>> GetRolesAsync()
+        {
+            return await _context.UserRoles.ToListAsync();
+        }
+
+        //  Get role by role id
+        public async Task<UserRole?> GetRoleByIdAsync(int roleId)
+        {
+            return await _context.UserRoles.FirstOrDefaultAsync(r => r.UserRoleId == roleId);
+        }
+
+
+
+        // Permission service functions to only get permissions
+
+
+        // Get all permissions
+        public async Task<List<Permission>> GetPermissionsAsync()
+        {
+            // retun only the permission names
+            return await _context.Permissions.ToListAsync();
         }
 
     }

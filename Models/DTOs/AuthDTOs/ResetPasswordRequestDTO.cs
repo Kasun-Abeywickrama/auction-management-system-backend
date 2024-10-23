@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AuctionManagementAPI.Models.DTOs
+namespace AuctionManagementAPI.Models.DTOs.AuthDTOs
 {
     public class ResetPasswordRequestDTO
     {

@@ -1,5 +1,6 @@
-﻿using AuctionManagementAPI.Models.DTOs;
+﻿using AuctionManagementAPI.Models.DTOs.AuthDTOs;
 using AuctionManagementAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuctionManagementAPI.Controllers
@@ -43,7 +44,7 @@ namespace AuctionManagementAPI.Controllers
 
         [HttpPost("VerifyOtp")]
         public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpDTO verifyOtpDTO)
-    
+
         {
             var result = await _authService.VerifyOtpAsync(verifyOtpDTO);
             if (result.Contains("successfully"))
@@ -87,5 +88,91 @@ namespace AuctionManagementAPI.Controllers
             }
             return BadRequest(result);
         }
+
+
+        // Role controllers to create, update, delete and get roles.
+
+        // Create role
+        [HttpPost("CreateUserRole")]
+        public async Task<IActionResult> CreateUserRole([FromBody] CreateUserRoleDTO createUserRoleDTO)
+        {
+            var result = await _authService.CreateRoleAsync(createUserRoleDTO);
+            if (result.Contains("Role created successfully."))
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+
+        // Update role
+        [HttpPut("UpdateUserRole")]
+        public async Task<IActionResult> UpdateUserRole([FromBody] UpdateUserRoleDTO updateUserRoleDTO)
+        {
+            var result = await _authService.UpdateRoleAsync(updateUserRoleDTO);
+            if (result.Contains("Role updated successfully."))
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+
+        // Delete role
+        [HttpDelete("DeleteUserRole")]
+        public async Task<IActionResult> DeleteUserRole([FromBody] DeleteUserRoleDTO deleteUserRoleDTO)
+        {
+            var result = await _authService.DeleteRoleAsync(deleteUserRoleDTO);
+            if (result.Contains("Role deleted successfully."))
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+
+        // Get all roles
+        [HttpGet("GetUserRoles")]
+        public async Task<IActionResult> GetUserRoles()
+        {
+            var result = await _authService.GetRolesAsync();
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest("No roles found.");
+        }
+
+
+        // Get role by id using from query string
+        [HttpGet("GetUserRoleById")]
+        public async Task<IActionResult> GetUserRoleById([FromQuery] int roleId)
+        {
+            var result = await _authService.GetRoleByIdAsync(roleId);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest("Role not found.");
+        }
+
+
+        // permission controllers to only get all permissions.
+
+
+        // Get all permissions
+        [Authorize]
+        [HttpGet("GetPermissions")]
+        public async Task<IActionResult> GetPermissions()
+        {
+            var result = await _authService.GetPermissionsAsync();
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest("No permissions found.");
+        }
+
+
     }
 }
