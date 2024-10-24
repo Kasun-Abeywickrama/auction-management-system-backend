@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace AuctionManagementAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigrationwithallstartingModels : Migration
+    public partial class Initialmigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,14 +37,14 @@ namespace AuctionManagementAPI.Migrations
                 name: "Lables",
                 columns: table => new
                 {
-                    LabelId = table.Column<int>(type: "int", nullable: false)
+                    LableId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Lables", x => x.LabelId);
+                    table.PrimaryKey("PK_Lables", x => x.LableId);
                 });
 
             migrationBuilder.CreateTable(
@@ -130,6 +132,8 @@ namespace AuctionManagementAPI.Migrations
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PasswordSalt = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsVerified = table.Column<bool>(type: "bit", nullable: false),
+                    FailedLoginAttempts = table.Column<int>(type: "int", nullable: false),
                     UserRoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -285,11 +289,11 @@ namespace AuctionManagementAPI.Migrations
                 columns: table => new
                 {
                     AuctionsAuctionId = table.Column<int>(type: "int", nullable: false),
-                    LablesLabelId = table.Column<int>(type: "int", nullable: false)
+                    LablesLableId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AuctionLables", x => new { x.AuctionsAuctionId, x.LablesLabelId });
+                    table.PrimaryKey("PK_AuctionLables", x => new { x.AuctionsAuctionId, x.LablesLableId });
                     table.ForeignKey(
                         name: "FK_AuctionLables_Auctions_AuctionsAuctionId",
                         column: x => x.AuctionsAuctionId,
@@ -297,10 +301,10 @@ namespace AuctionManagementAPI.Migrations
                         principalColumn: "AuctionId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AuctionLables_Lables_LablesLabelId",
-                        column: x => x.LablesLabelId,
+                        name: "FK_AuctionLables_Lables_LablesLableId",
+                        column: x => x.LablesLableId,
                         principalTable: "Lables",
-                        principalColumn: "LabelId",
+                        principalColumn: "LableId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -308,7 +312,7 @@ namespace AuctionManagementAPI.Migrations
                 name: "auctionSchedules",
                 columns: table => new
                 {
-                    ActionScheduleId = table.Column<int>(type: "int", nullable: false)
+                    AuctionScheduleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ScheduledStartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ScheduledEndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -318,7 +322,7 @@ namespace AuctionManagementAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_auctionSchedules", x => x.ActionScheduleId);
+                    table.PrimaryKey("PK_auctionSchedules", x => x.AuctionScheduleId);
                     table.ForeignKey(
                         name: "FK_auctionSchedules_Auctions_AuctionId",
                         column: x => x.AuctionId,
@@ -413,15 +417,116 @@ namespace AuctionManagementAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Permissions",
+                columns: new[] { "PermissionId", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, null, "to_create_auction" },
+                    { 2, null, "to_update_auction" },
+                    { 3, null, "to_delete_auction" },
+                    { 4, null, "to_get_all_auctions" },
+                    { 5, null, "to_get_auction_by_id" },
+                    { 6, null, "to_create_bid" },
+                    { 7, null, "to_update_bid" },
+                    { 8, null, "to_delete_bid" },
+                    { 9, null, "to_get_all_bids" },
+                    { 10, null, "to_get_bid_by_id" },
+                    { 11, null, "to_create_auction_schedule" },
+                    { 12, null, "to_update_auction_schedule" },
+                    { 13, null, "to_delete_auction_schedule" },
+                    { 14, null, "to_get_all_auction_schedules" },
+                    { 15, null, "to_get_auction_schedule_by_id" },
+                    { 16, null, "to_create_lable" },
+                    { 17, null, "to_update_lable" },
+                    { 18, null, "to_delete_lable" },
+                    { 19, null, "to_get_all_lables" },
+                    { 20, null, "to_get_lable_by_id" },
+                    { 21, null, "to_create_product" },
+                    { 22, null, "to_update_product" },
+                    { 23, null, "to_delete_product" },
+                    { 24, null, "to_get_all_products" },
+                    { 25, null, "to_get_product_by_id" },
+                    { 26, null, "to_create_payment" },
+                    { 27, null, "to_update_payment" },
+                    { 28, null, "to_delete_payment" },
+                    { 29, null, "to_get_all_payments" },
+                    { 30, null, "to_get_payment_by_id" },
+                    { 31, null, "to_create_category" },
+                    { 32, null, "to_update_category" },
+                    { 33, null, "to_delete_category" },
+                    { 34, null, "to_get_all_categories" },
+                    { 35, null, "to_get_category_by_id" },
+                    { 36, null, "to_create_transaction" },
+                    { 37, null, "to_update_transaction" },
+                    { 38, null, "to_delete_transaction" },
+                    { 39, null, "to_get_all_transactions" },
+                    { 40, null, "to_get_transaction_by_id" },
+                    { 41, null, "to_create_user" },
+                    { 42, null, "to_update_user" },
+                    { 43, null, "to_delete_user" },
+                    { 44, null, "to_get_all_users" },
+                    { 45, null, "to_get_user_by_id" },
+                    { 46, null, "to_create_report" },
+                    { 47, null, "to_update_report" },
+                    { 48, null, "to_delete_report" },
+                    { 49, null, "to_get_all_reports" },
+                    { 50, null, "to_get_report_by_id" },
+                    { 51, null, "to_create_user_role" },
+                    { 52, null, "to_update_user_role" },
+                    { 53, null, "to_delete_user_role" },
+                    { 54, null, "to_get_all_user_roles" },
+                    { 55, null, "to_get_user_role_by_id" },
+                    { 56, null, "to_create_permission" },
+                    { 57, null, "to_update_permission" },
+                    { 58, null, "to_delete_permission" },
+                    { 59, null, "to_get_all_permissions" },
+                    { 60, null, "to_get_permission_by_id" },
+                    { 61, null, "to_create_user_profile" },
+                    { 62, null, "to_update_user_profile" },
+                    { 63, null, "to_delete_user_profile" },
+                    { 64, null, "to_get_all_user_profiles" },
+                    { 65, null, "to_get_user_profile_by_id" },
+                    { 66, null, "to_create_notification" },
+                    { 67, null, "to_update_notification" },
+                    { 68, null, "to_delete_notification" },
+                    { 69, null, "to_get_all_notifications" },
+                    { 70, null, "to_get_notification_by_id" },
+                    { 71, null, "to_create_activity_log" },
+                    { 72, null, "to_update_activity_log" },
+                    { 73, null, "to_delete_activity_log" },
+                    { 74, null, "to_get_all_activity_logs" },
+                    { 75, null, "to_get_activity_log_by_id" },
+                    { 76, null, "to_create_otp" },
+                    { 77, null, "to_update_otp" },
+                    { 78, null, "to_delete_otp" },
+                    { 79, null, "to_get_all_otps" },
+                    { 80, null, "to_get_otp_by_id" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "UserRoles",
+                columns: new[] { "UserRoleId", "Role" },
+                values: new object[,]
+                {
+                    { 1, "admin" },
+                    { 2, "buyer" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "UserId", "Email", "FailedLoginAttempts", "FirstName", "IsVerified", "LastLogin", "LastName", "Password", "PasswordSalt", "UserRoleId" },
+                values: new object[] { 1, "admin@lansuwa.com", 0, "Admin", true, null, "User", "KtmYrvqbhm6PbytrQiY/e/StPH2XqMJNk4KVer4+AaY=", "T2NxIwaC6pQOcB5Z6C19rQ==", 1 });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ActivityLogs_UserId",
                 table: "ActivityLogs",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AuctionLables_LablesLabelId",
+                name: "IX_AuctionLables_LablesLableId",
                 table: "AuctionLables",
-                column: "LablesLabelId");
+                column: "LablesLableId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Auctions_ProductId",

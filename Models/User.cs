@@ -9,6 +9,8 @@
         public required string Password { get; set; }
         public required string PasswordSalt { get; set; }
         public DateTime? LastLogin { get; set; }
+        public bool IsVerified { get; set; } = false;  
+        public int FailedLoginAttempts { get; set; } = 0;
 
         // Navigation properties
         public ICollection<Payment>? Payments { get; set; }

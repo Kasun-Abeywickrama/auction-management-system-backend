@@ -5,7 +5,7 @@ namespace AuctionManagementAPI.Models
     public class AuctionSchedule
     {
         [Key]
-        public int ActionScheduleId { get; set; }
+        public int AuctionScheduleId { get; set; }
         public DateTime ScheduledStartTime { get; set; }
         public DateTime ScheduledEndTime { get; set; }
         public bool IsRecurring { get; set; }
