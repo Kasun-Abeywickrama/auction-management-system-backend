@@ -51,7 +51,6 @@ builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<ValidationService>();
 builder.Services.AddScoped<PermissionService>();
 
-
 // Add DbContext
 builder.Services.AddDbContext<AuctionContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -77,6 +76,18 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddAuthorization();
 
+// Enable CORS (for development, allowing any origin, method, and headers)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", builder =>
+    {
+        builder
+            .AllowAnyOrigin()   // Allow any origin (frontend)
+            .AllowAnyMethod()   // Allow any HTTP methods (GET, POST, etc.)
+            .AllowAnyHeader();  // Allow any headers
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -87,8 +98,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Enable CORS in the pipeline
+app.UseCors("CorsPolicy");
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
