@@ -1,125 +1,140 @@
-﻿using AuctionManagementAPI.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using AuctionManagementAPI.Models;
+using AuctionManagementAPI.Dtos;
 using AuctionManagementAPI.Data;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuctionManagementAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController : ControllerBase
+    public class CategoryController : ControllerBase
     {
-        private readonly AuctionContext _dbContext;
+        private readonly AuctionContext _context;
 
-        public CategoriesController(AuctionContext dbContext)
+        public CategoryController(AuctionContext context)
         {
-            _dbContext = dbContext;
+            _context = context;
         }
 
-        // GET: api/categories (Show all categories)
+        // GET: api/Category
         [HttpGet]
-        public IActionResult GetAllCategories()
+        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
         {
-            var categories = _dbContext.Categories.Select(c => new
-            {
-                c.CategoryId,
-                c.Name,
-                c.Description
-            }).ToList();
+            var categories = await _context.Categories
+                .Include(c => c.SubCategories)
+                .Select(c => new CategoryDto
+                {
+                    CategoryId = c.CategoryId,
+                    Name = c.Name,
+                    Description = c.Description,
+                    SubCategories = c.SubCategories.Select(sc => new CategoryDto
+                    {
+                        CategoryId = sc.CategoryId,
+                        Name = sc.Name,
+                        Description = sc.Description
+                    }).ToList()
+                }).ToListAsync();
 
-            if (categories == null || categories.Count == 0)
-            {
-                return NoContent();
-            }
             return Ok(categories);
         }
 
-        // GET: api/categories/{id} (Show a specific category by ID)
-        [HttpGet("{id:int}")]
-        public IActionResult GetCategoryById(int id)
+        // GET: api/Category/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CategoryDto>> GetCategory(int id)
         {
-            var category = _dbContext.Categories
-                .Where(c => c.CategoryId == id)
-                .Select(c => new
-                {
-                    c.CategoryId,
-                    c.Name,
-                    c.Description
-                })
-                .FirstOrDefault();
+            var category = await _context.Categories
+                .Include(c => c.SubCategories)
+                .FirstOrDefaultAsync(c => c.CategoryId == id);
 
             if (category == null)
             {
                 return NotFound();
             }
-            return Ok(category);
-        }
 
-        // POST: api/categories (Add a new category)
-        [HttpPost]
-        public IActionResult AddCategory(AddCategoryDto addCategoryDto)
-        {
-            if (addCategoryDto == null)
+            var categoryDto = new CategoryDto
             {
-                return BadRequest("Category data is missing");
-            }
-
-            var categoryEntity = new Category()
-            {
-                Name = addCategoryDto.Name,
-                Description = addCategoryDto.Description
+                CategoryId = category.CategoryId,
+                Name = category.Name,
+                Description = category.Description,
+                SubCategories = category.SubCategories.Select(sc => new CategoryDto
+                {
+                    CategoryId = sc.CategoryId,
+                    Name = sc.Name,
+                    Description = sc.Description
+                }).ToList()
             };
 
-            _dbContext.Categories.Add(categoryEntity);
-            _dbContext.SaveChanges();
-
-            return CreatedAtAction(nameof(GetCategoryById), new { id = categoryEntity.CategoryId }, new
-            {
-                categoryEntity.CategoryId,
-                categoryEntity.Name,
-                categoryEntity.Description
-            });
+            return Ok(categoryDto);
         }
 
-        // PUT: api/categories/{id} (Update an existing category)
-        [HttpPut("{id:int}")]
-        public IActionResult UpdateCategory(int id, UpdateCategoryDto updateCategoryDto)
+        // POST: api/Category
+        [HttpPost]
+        public async Task<ActionResult<CategoryDto>> CreateCategory(CategoryCreateDto categoryCreateDto)
         {
-            var category = _dbContext.Categories.Find(id);
+            var category = new Category
+            {
+                Name = categoryCreateDto.Name,
+                Description = categoryCreateDto.Description,
+                ParentCategoryId = categoryCreateDto.ParentCategoryId
+            };
+
+            _context.Categories.Add(category);
+            await _context.SaveChangesAsync();
+
+            var categoryDto = new CategoryDto
+            {
+                CategoryId = category.CategoryId,
+                Name = category.Name,
+                Description = category.Description
+            };
+
+            return CreatedAtAction(nameof(GetCategory), new { id = categoryDto.CategoryId }, categoryDto);
+        }
+
+        // PUT: api/Category/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCategory(int id, CategoryUpdateDto categoryUpdateDto)
+        {
+            var category = await _context.Categories.FindAsync(id);
 
             if (category == null)
             {
                 return NotFound();
             }
 
-            category.Name = updateCategoryDto.Name;
-            category.Description = updateCategoryDto.Description;
+            category.Name = categoryUpdateDto.Name;
+            category.Description = categoryUpdateDto.Description;
 
-            _dbContext.SaveChanges();
+            _context.Entry(category).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
-            return Ok(new
-            {
-                category.CategoryId,
-                category.Name,
-                category.Description
-            });
+            return NoContent();
         }
 
-        // DELETE: api/categories/{id} (Delete a category)
-        [HttpDelete("{id:int}")]
-        public IActionResult DeleteCategory(int id)
+        // DELETE: api/Category/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
         {
-            var category = _dbContext.Categories.Find(id);
+            var category = await _context.Categories
+                .Include(c => c.SubCategories)
+                .FirstOrDefaultAsync(c => c.CategoryId == id);
 
             if (category == null)
             {
                 return NotFound();
             }
 
-            _dbContext.Categories.Remove(category);
-            _dbContext.SaveChanges();
+            // Check if the category has subcategories
+            if (category.SubCategories.Any())
+            {
+                return BadRequest("Cannot delete a category with subcategories.");
+            }
 
-            return Ok(new { message = "Category deleted successfully" });
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
