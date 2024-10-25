@@ -11,11 +11,11 @@ namespace AuctionManagementAPI.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class MyBidsController : ControllerBase
+    public class BidController : ControllerBase
     {
         private readonly BidService _bidService;
 
-        public MyBidsController(BidService bidService)
+        public BidController(BidService bidService)
         {
             this._bidService = bidService;
         }
@@ -64,6 +64,32 @@ namespace AuctionManagementAPI.Controllers
 
             return BadRequest("User profile not found");
         }
+
+        //api to delete a bid
+        [HttpDelete("DeleteBid/{bidId}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteBid(int bidId)
+        {
+
+            // get the user id from the token
+            var userId = User.FindFirstValue("UserId");
+
+            if (userId == null)
+            {
+                return BadRequest("User not found");
+            }
+
+            // convert the user id to an integer
+            int uId = Int32.Parse(userId);
+
+            var result = await _bidService.DeleteBidAsync(uId, bidId);
+            if (result.Contains("Your bid was deleted successfully"))
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
 
 
     }

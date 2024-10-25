@@ -5,6 +5,7 @@
         //ProductId, Name, Description, Images
         public int ProductId { get; set; }
         public required string Name { get; set; }
+        public required decimal Shippingfee { get; set; }
         public string? Description { get; set; }
         public List<string>? Images { get; set; }
 
