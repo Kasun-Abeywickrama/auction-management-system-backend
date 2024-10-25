@@ -52,7 +52,28 @@ namespace AuctionManagementAPI.Services
             return bids;
         }
 
+        public async Task<string> DeleteBidAsync(int userId, int bidId)
+        {
+            // check if the bid exists
+            var bid = await _context.Bids.FirstOrDefaultAsync(x => x.UserId == userId && x.BidId == bidId);
+            if (bid == null)
+            {
+                return "Bid was not found";
+            }
+
+            // remove the bid from the database
+            _context.Bids.Remove(bid);
+            await _context.SaveChangesAsync();
+
+            return "Your bid was deleted successfully";
+
+
+        }
+
     }
+
+    
+
 }
 
 
