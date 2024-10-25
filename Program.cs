@@ -50,6 +50,7 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<ValidationService>();
 builder.Services.AddScoped<PermissionService>();
+builder.Services.AddScoped<BidService>();
 
 // Add DbContext
 builder.Services.AddDbContext<AuctionContext>(options =>

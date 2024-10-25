@@ -1,6 +1,10 @@
 ﻿using AuctionManagementAPI.Data;
 using AuctionManagementAPI.Models;
+using AuctionManagementAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace AuctionManagementAPI.Controllers
 {
@@ -9,23 +13,59 @@ namespace AuctionManagementAPI.Controllers
     [ApiController]
     public class MyBidsController : ControllerBase
     {
-        private readonly AuctionContext auctionContext;
+        private readonly BidService _bidService;
 
-        public MyBidsController(AuctionContext auctionContext)
+        public MyBidsController(BidService bidService)
         {
-            this.auctionContext = auctionContext;
+            this._bidService = bidService;
         }
 
-        [HttpGet("DisplayMyBids")]
-        public IActionResult GetAllMyBids()
+        [HttpGet("GetMyBids")]
+        [Authorize]
+        public async Task<IActionResult> GetMyBids()
         {
-            var bids = auctionContext.Bids.ToList();
+            // get the user id from the token
+            var userId = User.FindFirstValue("UserId");
 
-            if (bids.Count == 0)
+            if (userId == null)
             {
-                return NotFound("No bids found");
+                return BadRequest("User not found");
             }
-            return Ok(bids);
+
+            // convert the user id to an integer
+            int uId = Int32.Parse(userId);
+
+            // Get bids with necessary includes
+            var result = await _bidService.GetMyBidsAsync(uId);
+            if (result != null)
+            {
+                var currentTime = DateTime.Now;
+
+
+
+                var bids = result
+                    .Select(b => new
+                    {
+                        b.BidId,
+                        b.BidAmount,
+                        b.TimeStamp,
+                        ProductName = b.Auction.Product.Name, // Assuming this is correct
+                        HighestBidAmount = _bidService.GetHighestBidForAuction(b.AuctionId).Result,
+                        TimeStart = b.Auction.StartTime,
+                        TimeEnd = b.Auction.EndTime,
+                        TimeLeft = $"{(b.Auction.EndTime > currentTime ? (b.Auction.EndTime - currentTime).Days > 0 ? $"{(b.Auction.EndTime - currentTime).Days}d " : "" : "")}" +
+                                   $"{(b.Auction.EndTime > currentTime ? (b.Auction.EndTime - currentTime).Hours : 0)}h " +
+                                   $"{(b.Auction.EndTime > currentTime ? (b.Auction.EndTime - currentTime).Minutes : 0)} min"
+                    })
+                    .ToList();
+
+                return Ok(bids);
+            }
+
+            return BadRequest("User profile not found");
         }
+
+
     }
 }
+
