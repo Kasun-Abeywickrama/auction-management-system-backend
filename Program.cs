@@ -50,7 +50,9 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<ValidationService>();
 builder.Services.AddScoped<PermissionService>();
+builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<BidService>();
+
 
 // Add DbContext
 builder.Services.AddDbContext<AuctionContext>(options =>
@@ -68,11 +70,12 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = true,
+        ValidateLifetime = true, 
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        ClockSkew = TimeSpan.Zero // Optional: Reduce clock skew to zero for testing
     };
 });
 builder.Services.AddAuthorization();
