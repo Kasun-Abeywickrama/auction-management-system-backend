@@ -3,6 +3,7 @@
     public class UserProfile
     {
         public int UserProfileId { get; set; }
+        public string? Address { get; set; }
         public decimal SellerRating { get; set; }
         public string? PaymentDetails { get; set; }
         public string? AdditionalData { get; set; }
