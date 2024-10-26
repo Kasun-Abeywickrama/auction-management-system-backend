@@ -1,4 +1,6 @@
-﻿namespace AuctionManagementAPI.Models
+﻿using System.Text.Json.Serialization;
+
+namespace AuctionManagementAPI.Models
 {
     public class Category
     {
@@ -9,6 +11,8 @@
         // Navigation properties
         public ICollection<Product>? Products { get; set; }
         public ICollection<Category>? SubCategories { get; set; } // Collection of child categories
+
+        [JsonIgnore]
         public Category? ParentCategory { get; set; } // Navigation property for parent category
 
         // Foreign key
