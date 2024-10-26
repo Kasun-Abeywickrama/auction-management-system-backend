@@ -71,7 +71,8 @@ namespace AuctionManagementAPI.Data
             modelBuilder.Entity<Category>()
                 .HasOne(c => c.ParentCategory)
                 .WithMany(c => c.SubCategories)
-                .HasForeignKey(c => c.ParentCategoryId);
+                .HasForeignKey(c => c.ParentCategoryId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Payment and Transaction have a one-to-many relationship
             modelBuilder.Entity<Payment>()
