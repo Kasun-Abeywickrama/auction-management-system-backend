@@ -52,6 +52,7 @@ builder.Services.AddScoped<ValidationService>();
 builder.Services.AddScoped<PermissionService>();
 builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<BidService>();
+builder.Services.AddScoped<CategoryService>();
 
 
 // Add DbContext
