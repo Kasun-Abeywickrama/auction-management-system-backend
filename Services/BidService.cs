@@ -3,6 +3,7 @@ using AuctionManagementAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using AuctionManagementAPI.Models.DTOs.BidDTOs;
 
 namespace AuctionManagementAPI.Services
 {
@@ -70,9 +71,36 @@ namespace AuctionManagementAPI.Services
 
         }
 
+
+        public async Task<string> UpdateBidAsync(BidDTO bidDTO, int userId)
+        {
+            // check if the bid exists
+            var bid = await _context.Bids.FirstOrDefaultAsync(x => x.UserId == userId && x.BidId == bidDTO.BidId);
+            if (bid == null)
+            {
+                return "Bid was not found";
+            }
+
+            // update the bid
+            bid.BidAmount = bidDTO.BidAmount;
+            
+
+            // save the changes to the database
+            await _context.SaveChangesAsync();
+
+            return "Bid was updated successfully";
+        }
+
+
+        public async Task<int> GetBidCountForAuctionAsync(int auctionId)
+        {
+            return await _context.Bids.CountAsync(b => b.AuctionId == auctionId);
+        }
+
+
     }
 
-    
+
 
 }
 

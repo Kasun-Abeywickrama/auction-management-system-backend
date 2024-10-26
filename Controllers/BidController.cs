@@ -1,10 +1,11 @@
 ﻿using AuctionManagementAPI.Data;
-using AuctionManagementAPI.Models;
+using AuctionManagementAPI.Models.DTOs.BidDTOs;
 using AuctionManagementAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+
 
 namespace AuctionManagementAPI.Controllers
 {
@@ -49,7 +50,9 @@ namespace AuctionManagementAPI.Controllers
                         b.BidId,
                         b.BidAmount,
                         b.TimeStamp,
-                        ProductName = b.Auction.Product.Name, // Assuming this is correct
+                        b.AuctionId,
+                        ProductName = b.Auction.Product.Name, 
+                        ShippingFee = b.Auction.Product.Shippingfee,
                         HighestBidAmount = _bidService.GetHighestBidForAuction(b.AuctionId).Result,
                         TimeStart = b.Auction.StartTime,
                         TimeEnd = b.Auction.EndTime,
@@ -90,7 +93,39 @@ namespace AuctionManagementAPI.Controllers
             return BadRequest(result);
         }
 
+        // api to update a bid
+        [HttpPut("UpdateBid/{bidId}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateBid([FromBody] BidDTO bidDTO)
+        {
 
+            // get the user id from the token
+            var userId = User.FindFirstValue("UserId");
+
+            if (userId == null)
+            {
+                return BadRequest("User not found");
+            }
+
+            // convert the user id to an integer
+            int uId = Int32.Parse(userId);
+
+            var result = await _bidService.UpdateBidAsync(bidDTO, uId);
+            if (result.Contains("Bid was updated successfully"))
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+
+        [HttpGet("GetBidCount/{auctionId}")]
+        [Authorize]
+        public async Task<IActionResult> GetBidCount(int auctionId)
+        {
+            var bidCount = await _bidService.GetBidCountForAuctionAsync(auctionId);
+            return Ok(bidCount);
+        }
 
     }
 }
