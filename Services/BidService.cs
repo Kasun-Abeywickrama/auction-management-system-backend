@@ -74,22 +74,22 @@ namespace AuctionManagementAPI.Services
 
         public async Task<string> UpdateBidAsync(BidDTO bidDTO, int userId)
         {
-            // check if the bid exists
+            // Check if the bid exists and is owned by the user
             var bid = await _context.Bids.FirstOrDefaultAsync(x => x.UserId == userId && x.BidId == bidDTO.BidId);
             if (bid == null)
             {
-                return "Bid was not found";
+                return "Bid was not found or does not belong to the user";
             }
 
-            // update the bid
+            // Update the bid amount
             bid.BidAmount = bidDTO.BidAmount;
-            
 
-            // save the changes to the database
+            // Save changes to the database
             await _context.SaveChangesAsync();
 
             return "Bid was updated successfully";
         }
+
 
 
         public async Task<int> GetBidCountForAuctionAsync(int auctionId)

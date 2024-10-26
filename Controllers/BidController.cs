@@ -94,12 +94,12 @@ namespace AuctionManagementAPI.Controllers
         }
 
         // api to update a bid
-        [HttpPut("UpdateBid/{bidId}")]
+        // Update the bid amount for a specific bid
+        [HttpPut("UpdateBid")]
         [Authorize]
         public async Task<IActionResult> UpdateBid([FromBody] BidDTO bidDTO)
         {
-
-            // get the user id from the token
+            // Get the user ID from the token
             var userId = User.FindFirstValue("UserId");
 
             if (userId == null)
@@ -107,16 +107,18 @@ namespace AuctionManagementAPI.Controllers
                 return BadRequest("User not found");
             }
 
-            // convert the user id to an integer
+            // Convert the user ID to an integer
             int uId = Int32.Parse(userId);
 
+            // Call the service to update the bid
             var result = await _bidService.UpdateBidAsync(bidDTO, uId);
-            if (result.Contains("Bid was updated successfully"))
+            if (result.Contains("successfully"))
             {
                 return Ok(result);
             }
             return BadRequest(result);
         }
+
 
 
         [HttpGet("GetBidCount/{auctionId}")]
