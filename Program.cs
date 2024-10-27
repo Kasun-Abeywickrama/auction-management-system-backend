@@ -50,6 +50,7 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<ValidationService>();
 builder.Services.AddScoped<PermissionService>();
+builder.Services.AddScoped<PaymentService>();
 
 // Add DbContext
 builder.Services.AddDbContext<AuctionContext>(options =>
@@ -72,6 +73,7 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+
     };
 });
 builder.Services.AddAuthorization();
