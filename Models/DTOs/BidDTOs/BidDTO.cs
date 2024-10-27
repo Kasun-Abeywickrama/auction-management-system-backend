@@ -5,5 +5,9 @@
         public int BidId { get; set; }
 
         public decimal BidAmount { get; set; }
+
+        // Foreign key
+       
+
     }
 }
