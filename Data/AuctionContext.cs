@@ -26,6 +26,8 @@ namespace AuctionManagementAPI.Data
         public DbSet<ActivityLog> ActivityLogs { get; set; }
         public DbSet<Otp> Otps { get; set; }
 
+        public DbSet<ShippingDetails> ShippingDetails { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -142,12 +144,19 @@ namespace AuctionManagementAPI.Data
                 .WithOne(o => o.User)
                 .HasForeignKey(o => o.UserId);
 
+            //User and ShippingDetails have a one-to-many relationship
+            modelBuilder.Entity<ShippingDetails>()
+                .HasOne(s => s.User)
+                .WithMany(u => u.ShippingDetails)
+                .HasForeignKey(u => u.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-
-
-
-
-
+            // Bid and ShippingDetails have a one-to-one relationship
+             modelBuilder.Entity<ShippingDetails>()
+                .HasOne(b => b.Bid)
+                .WithOne(s => s.shippingDetails)
+                .HasForeignKey<ShippingDetails>(b => b.BidId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
 
