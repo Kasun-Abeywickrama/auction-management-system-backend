@@ -4,6 +4,7 @@ using AuctionManagementAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuctionManagementAPI.Migrations
 {
     [DbContext(typeof(AuctionContext))]
-    partial class AuctionContextModelSnapshot : ModelSnapshot
+    [Migration("20241026191834_Update Auctuin table")]
+    partial class UpdateAuctuintable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,6 +106,9 @@ namespace AuctionManagementAPI.Migrations
                     b.Property<string>("ReturnShippingPaidBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ScheduledTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ShippingMethod")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -137,7 +143,10 @@ namespace AuctionManagementAPI.Migrations
                     b.Property<string>("RecurrentPattern")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ScheduledTime")
+                    b.Property<DateTime>("ScheduledEndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ScheduledStartTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("AuctionScheduleId");
@@ -161,9 +170,6 @@ namespace AuctionManagementAPI.Migrations
 
                     b.Property<decimal>("BidAmount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsWinningBid")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
@@ -766,7 +772,7 @@ namespace AuctionManagementAPI.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrls")
+                    b.Property<string>("Images")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -812,41 +818,6 @@ namespace AuctionManagementAPI.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Reports");
-                });
-
-            modelBuilder.Entity("AuctionManagementAPI.Models.ShippingDetails", b =>
-                {
-                    b.Property<int>("ShippingDetailsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShippingDetailsId"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("BidId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ContactNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ShippingDetailsId");
-
-                    b.HasIndex("BidId")
-                        .IsUnique();
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ShippingDetails");
                 });
 
             modelBuilder.Entity("AuctionManagementAPI.Models.Transaction", b =>
@@ -1159,25 +1130,6 @@ namespace AuctionManagementAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AuctionManagementAPI.Models.ShippingDetails", b =>
-                {
-                    b.HasOne("AuctionManagementAPI.Models.Bid", "Bid")
-                        .WithOne("shippingDetails")
-                        .HasForeignKey("AuctionManagementAPI.Models.ShippingDetails", "BidId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("AuctionManagementAPI.Models.User", "User")
-                        .WithMany("ShippingDetails")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Bid");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("AuctionManagementAPI.Models.Transaction", b =>
                 {
                     b.HasOne("AuctionManagementAPI.Models.Payment", "Payment")
@@ -1238,8 +1190,6 @@ namespace AuctionManagementAPI.Migrations
             modelBuilder.Entity("AuctionManagementAPI.Models.Bid", b =>
                 {
                     b.Navigation("Payment");
-
-                    b.Navigation("shippingDetails");
                 });
 
             modelBuilder.Entity("AuctionManagementAPI.Models.Category", b =>
@@ -1272,8 +1222,6 @@ namespace AuctionManagementAPI.Migrations
                     b.Navigation("Payments");
 
                     b.Navigation("Reports");
-
-                    b.Navigation("ShippingDetails");
 
                     b.Navigation("UserProfile");
                 });

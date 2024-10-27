@@ -2,11 +2,12 @@
 {
     public class Product
     {
-        //ProductId, Name, Description, Images
+        //ProductId, Name, Description, ImageUrls
         public int ProductId { get; set; }
         public required string Name { get; set; }
+        public required decimal Shippingfee { get; set; }
         public string? Description { get; set; }
-        public List<string>? Images { get; set; }
+        public List<string>? ImageUrls { get; set; }
 
         // Navigation properties
         public ICollection<Auction>? Auctions { get; set; }
