@@ -4,6 +4,7 @@ using AuctionManagementAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuctionManagementAPI.Migrations
 {
     [DbContext(typeof(AuctionContext))]
-    partial class AuctionContextModelSnapshot : ModelSnapshot
+    [Migration("20241026191834_Update Auctuin table")]
+    partial class UpdateAuctuintable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,6 +106,9 @@ namespace AuctionManagementAPI.Migrations
                     b.Property<string>("ReturnShippingPaidBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ScheduledTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ShippingMethod")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -137,7 +143,10 @@ namespace AuctionManagementAPI.Migrations
                     b.Property<string>("RecurrentPattern")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ScheduledTime")
+                    b.Property<DateTime>("ScheduledEndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ScheduledStartTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("AuctionScheduleId");
@@ -763,7 +772,7 @@ namespace AuctionManagementAPI.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrls")
+                    b.Property<string>("Images")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
