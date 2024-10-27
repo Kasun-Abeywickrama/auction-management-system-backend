@@ -10,6 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// Use this instead of Json ignore loop
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.MaxDepth = 64; // Adjust as necessary
+    });
+
+
+
 builder.Services.AddEndpointsApiExplorer();
 
 // Configure Swagger to support JWT authentication
@@ -53,7 +64,8 @@ builder.Services.AddScoped<PermissionService>();
 builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<BidService>();
 builder.Services.AddScoped<CategoryService>();
-
+builder.Services.AddScoped<ProductImageService>(); // Register ProductImageService
+builder.Services.AddScoped<AuctionService>(); 
 
 // Add DbContext
 builder.Services.AddDbContext<AuctionContext>(options =>
@@ -103,6 +115,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Enable serving static files from wwwroot
+app.UseStaticFiles(); // Enables access to wwwroot folder for static files, including images
 
 // Enable CORS in the pipeline
 app.UseCors("CorsPolicy");

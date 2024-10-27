@@ -6,8 +6,7 @@ namespace AuctionManagementAPI.Models
     {
         [Key]
         public int AuctionScheduleId { get; set; }
-        public DateTime ScheduledStartTime { get; set; }
-        public DateTime ScheduledEndTime { get; set; }
+        public DateTime ScheduledTime { get; set; }
         public bool IsRecurring { get; set; }
         public string? RecurrentPattern { get; set; }
 
