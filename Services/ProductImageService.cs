@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AuctionManagementAPI.Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
@@ -8,13 +9,17 @@ public class ProductImageService
 {
     private readonly IWebHostEnvironment _environment;
 
-    public ProductImageService(IWebHostEnvironment environment)
+    private readonly AuctionContext _context;
+
+    public ProductImageService(AuctionContext _context, IWebHostEnvironment environment)
     {
         _environment = environment;
+        this._context = _context;
     }
 
     public async Task<string> SaveProductImageAsync(int productId, IFormFile imageFile)
     {
+
         if (imageFile == null || imageFile.Length == 0)
             throw new ArgumentException("Invalid image file.");
 
@@ -56,5 +61,52 @@ public class ProductImageService
 
 
 
+    public async Task<bool> SaveImageUrlsToDatabaseAsync(int productId, List<string> imageUrls)
+    {
+
+        // Add new the image URLs also into the product table in the database
+        var product = await _context.Products.FindAsync(productId);
+        if (product == null)
+            return false;
+
+        if (product.ImageUrls == null)
+            product.ImageUrls = new List<string>();
+
+        product.ImageUrls.AddRange(imageUrls);
+        await _context.SaveChangesAsync();
+        return true;
+
+    }
+
+
+    // function to Check weather there is a product for this productId
+    public async Task<bool> CheckProductExist(int productId)
+    {
+        var product = await _context.Products.FindAsync(productId);
+        if (product == null)
+            return false;
+        return true;
+    }
+
+
+    public async Task<bool> DeleteProductImageFromDBAsync(int productId, string imageName)
+    {
+        var product = await _context.Products.FindAsync(productId);
+        if (product == null)
+            return false;
+
+        if (product.ImageUrls == null || product.ImageUrls.Count == 0)
+            return false;
+
+        // create image url from image name
+        var imageUrls = $"/product-images/{productId}/{imageName}";
+
+        if (!product.ImageUrls.Contains(imageUrls))
+            return false;
+
+        product.ImageUrls.Remove(imageUrls);
+        await _context.SaveChangesAsync();
+        return true;
+    }
 
 }

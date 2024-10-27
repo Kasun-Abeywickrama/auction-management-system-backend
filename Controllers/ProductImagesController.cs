@@ -17,6 +17,11 @@ public class ProductImagesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> UploadImages(int productId, [FromForm] List<IFormFile> imageFiles)
     {
+        if (!await _imageService.CheckProductExist(productId)) {  
+            return NotFound("Product not found.");
+        }
+       
+
         if (imageFiles == null || imageFiles.Count == 0)
             return BadRequest("No image files provided.");
 
@@ -28,12 +33,21 @@ public class ProductImagesController : ControllerBase
             imageUrls.Add(imageUrl);
         }
 
+        // Save image URLs to the database
+        var result = await _imageService.SaveImageUrlsToDatabaseAsync(productId, imageUrls);
+        if (!result)
+            return BadRequest("Failed to save image URLs to the database.");
+
+
         return Ok(new { imageUrls });
     }
+
+
 
     [HttpGet]
     public IActionResult GetProductImages(int productId)
     {
+
         var productImagesFolder = Path.Combine("wwwroot", "product-images", productId.ToString());
         if (!Directory.Exists(productImagesFolder))
             return NotFound("No images found for this product.");
@@ -50,13 +64,24 @@ public class ProductImagesController : ControllerBase
     }
 
 
+
     [HttpDelete("{imageName}")]
     public async Task<IActionResult> DeleteImage(int productId, string imageName)
     {
-        var result = await _imageService.DeleteProductImageAsync(productId, imageName);
 
+        if (!await _imageService.CheckProductExist(productId))
+        {
+            return NotFound("Product not found.");
+        }
+
+        var result = await _imageService.DeleteProductImageAsync(productId, imageName);
         if (!result)
             return NotFound("Image not found or could not be deleted.");
+
+        // If the image was deleted successfully, remove the URL from the database
+        var res = await _imageService.DeleteProductImageFromDBAsync(productId, imageName);
+        if (!res)
+            return BadRequest("Failed to delete image from the database.");
 
         return NoContent();
     }
