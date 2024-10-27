@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AuctionManagementAPI.Models.DTOs.BidDTOs;
+using AuctionManagementAPI.Models.DTOs.UserProfileDTOs;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace AuctionManagementAPI.Services
 {
@@ -16,10 +18,46 @@ namespace AuctionManagementAPI.Services
             _context = context;
         }
 
-        
 
-            // get my bids
-            public async Task<List<Bid>> GetMyBidsAsync(int userId)
+
+        public async Task<string> CreateBidAsync(CreateBidDTO createBidDTO, int userId)
+        {
+
+            // get the user
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            if (user == null)
+            {
+                return "User not found";
+            }
+
+            // Check if auction exists
+            var auction = await _context.Auctions.FirstOrDefaultAsync(a => a.AuctionId == createBidDTO.AuctionId);
+            if (auction == null)
+            {
+                return "Auction not found";
+            }
+            // create a new bid
+            var newBid = new Bid
+            {
+                BidAmount = createBidDTO.BidAmount,
+                User = user,
+                UserId = userId,
+                Auction = auction,      // Associate with the existing auction
+                AuctionId = auction.AuctionId
+
+            };
+
+            // add the new bid to the database
+            await _context.Bids.AddAsync(newBid);
+            await _context.SaveChangesAsync();
+
+            return "Bid was created successfully";
+
+        }
+
+
+        // get my bids
+        public async Task<List<Bid>> GetMyBidsAsync(int userId)
             {
                 // get all bids for the given userId and include related entities
                 var myBids = await _context.Bids

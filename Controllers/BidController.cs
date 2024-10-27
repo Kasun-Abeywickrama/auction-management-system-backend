@@ -21,6 +21,36 @@ namespace AuctionManagementAPI.Controllers
             this._bidService = bidService;
         }
 
+
+
+
+
+        // api to create a bid
+        [HttpPost("CreateBid/{auctionId}")]
+        [Authorize]
+        public async Task<IActionResult> CreateBid([FromBody] CreateBidDTO createBidDTO) 
+        {
+
+            // get the user id from the token
+            var userId = User.FindFirstValue("UserId");
+
+            if (userId == null)
+            {
+                return BadRequest("User not found");
+            }
+
+            // convert the user id to an integer
+            int uId = Int32.Parse(userId);
+
+            var result = await _bidService.CreateBidAsync(createBidDTO, uId);
+            if (result.Contains("Bid was created successfully"))
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+
         [HttpGet("GetMyBids")]
         [Authorize]
         public async Task<IActionResult> GetMyBids()
