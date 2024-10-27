@@ -53,7 +53,7 @@ builder.Services.AddScoped<PermissionService>();
 builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<BidService>();
 builder.Services.AddScoped<CategoryService>();
-
+builder.Services.AddScoped<ProductImageService>(); // Register ProductImageService
 
 // Add DbContext
 builder.Services.AddDbContext<AuctionContext>(options =>
@@ -103,6 +103,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Enable serving static files from wwwroot
+app.UseStaticFiles(); // Enables access to wwwroot folder for static files, including images
 
 // Enable CORS in the pipeline
 app.UseCors("CorsPolicy");

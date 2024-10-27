@@ -73,23 +73,48 @@ namespace AuctionManagementAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuctionId"));
 
-                    b.Property<decimal>("CurrentBid")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<bool>("AcceptReturn")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool?>("IrregularDimension")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsSold")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PackageDimension")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PackageWeight")
+                        .HasColumnType("int");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
+
+                    b.Property<int?>("ReturnAllowedWithin")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReturnMethod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReturnShippingPaidBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ScheduledTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ShippingMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("StartingBid")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AuctionId");
 
