@@ -4,6 +4,7 @@ using AuctionManagementAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuctionManagementAPI.Migrations
 {
     [DbContext(typeof(AuctionContext))]
-    partial class AuctionContextModelSnapshot : ModelSnapshot
+    [Migration("20241028184257_AddWatchAuctionModel")]
+    partial class AddWatchAuctionModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -958,34 +961,6 @@ namespace AuctionManagementAPI.Migrations
                         });
                 });
 
-            modelBuilder.Entity("AuctionManagementAPI.Models.WatchAuction", b =>
-                {
-                    b.Property<int>("WatchAuctionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WatchAuctionId"));
-
-                    b.Property<int>("AuctionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("BidId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("WatchAuctionId");
-
-                    b.HasIndex("AuctionId");
-
-                    b.HasIndex("BidId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("WatchAuctions");
-                });
-
             modelBuilder.Entity("PermissionUserRole", b =>
                 {
                     b.Property<int>("PermissionsPermissionId")
@@ -1178,31 +1153,6 @@ namespace AuctionManagementAPI.Migrations
                         .HasForeignKey("AuctionManagementAPI.Models.UserProfile", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("AuctionManagementAPI.Models.WatchAuction", b =>
-                {
-                    b.HasOne("AuctionManagementAPI.Models.Auction", "Auction")
-                        .WithMany()
-                        .HasForeignKey("AuctionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AuctionManagementAPI.Models.Bid", "Bid")
-                        .WithMany()
-                        .HasForeignKey("BidId");
-
-                    b.HasOne("AuctionManagementAPI.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Auction");
-
-                    b.Navigation("Bid");
 
                     b.Navigation("User");
                 });

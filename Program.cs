@@ -65,7 +65,9 @@ builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<BidService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<ProductImageService>(); // Register ProductImageService
-builder.Services.AddScoped<AuctionService>(); 
+builder.Services.AddScoped<AuctionService>();
+builder.Services.AddScoped<WatchlistService>();
+
 
 // Add DbContext
 builder.Services.AddDbContext<AuctionContext>(options =>
