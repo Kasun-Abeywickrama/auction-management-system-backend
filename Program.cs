@@ -61,6 +61,7 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<ValidationService>();
 builder.Services.AddScoped<PermissionService>();
+builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<BidService>();
 builder.Services.AddScoped<CategoryService>();
