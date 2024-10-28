@@ -70,7 +70,7 @@ namespace AuctionManagementAPI.Services
 
                 
             }
-        public async Task<decimal> GetHighestBidForAuction(int auctionId)
+        public async Task<decimal> GetHighestBidForAuctionAsync(int auctionId)
         {
             var highestBid = await _context.Bids
                 .Where(b => b.AuctionId == auctionId)

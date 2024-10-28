@@ -83,7 +83,7 @@ namespace AuctionManagementAPI.Controllers
                         b.AuctionId,
                         ProductName = b.Auction.Product.Name, 
                         ShippingFee = b.Auction.Product.Shippingfee,
-                        HighestBidAmount = _bidService.GetHighestBidForAuction(b.AuctionId).Result,
+                        HighestBidAmount = _bidService.GetHighestBidForAuctionAsync(b.AuctionId).Result,
                         TimeStart = b.Auction.StartTime,
                         TimeEnd = b.Auction.EndTime,
                         TimeLeft = $"{(b.Auction.EndTime > currentTime ? (b.Auction.EndTime - currentTime).Days > 0 ? $"{(b.Auction.EndTime - currentTime).Days}d " : "" : "")}" +
@@ -149,7 +149,13 @@ namespace AuctionManagementAPI.Controllers
             return BadRequest(result);
         }
 
-
+        [HttpGet("GetHighestBid/{auctionId}")]
+        [Authorize]
+        public async Task<IActionResult> GetHighestBid(int auctionId)
+        {
+            var highestBidAmount = await _bidService.GetHighestBidForAuctionAsync(auctionId);
+            return Ok(highestBidAmount);
+        }
 
         [HttpGet("GetBidCount/{auctionId}")]
         [Authorize]
