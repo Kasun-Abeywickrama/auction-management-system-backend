@@ -22,6 +22,9 @@
         public ICollection<ActivityLog>? ActivityLogs { get; set; }
         public ICollection<Otp>? Otps { get; set; }
 
+        // new
+        public ICollection<ShippingDetails>? ShippingDetails { get; set; }
+
         // Foreign key
         public int UserRoleId { get; set; }
     }

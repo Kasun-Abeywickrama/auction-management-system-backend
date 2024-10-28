@@ -4,6 +4,7 @@ using AuctionManagementAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuctionManagementAPI.Migrations
 {
     [DbContext(typeof(AuctionContext))]
-    partial class AuctionContextModelSnapshot : ModelSnapshot
+    [Migration("20241027145352_Add Shipping details table")]
+    partial class AddShippingdetailstable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,45 +76,23 @@ namespace AuctionManagementAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuctionId"));
 
-                    b.Property<bool>("AcceptReturn")
-                        .HasColumnType("bit");
+                    b.Property<decimal>("CurrentBid")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool?>("IrregularDimension")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsSold")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PackageDimension")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PackageWeight")
-                        .HasColumnType("int");
-
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
-
-                    b.Property<int?>("ReturnAllowedWithin")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ReturnMethod")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReturnShippingPaidBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShippingMethod")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("StartingBid")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AuctionId");
 
@@ -137,7 +118,10 @@ namespace AuctionManagementAPI.Migrations
                     b.Property<string>("RecurrentPattern")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ScheduledTime")
+                    b.Property<DateTime>("ScheduledEndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ScheduledStartTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("AuctionScheduleId");
@@ -766,15 +750,12 @@ namespace AuctionManagementAPI.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrls")
+                    b.Property<string>("Images")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Shippingfee")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("ProductId");
 
@@ -947,9 +928,6 @@ namespace AuctionManagementAPI.Migrations
                     b.Property<string>("AdditionalData")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PaymentDetails")
                         .HasColumnType("nvarchar(max)");
 
@@ -994,34 +972,6 @@ namespace AuctionManagementAPI.Migrations
                             UserRoleId = 2,
                             Role = "buyer"
                         });
-                });
-
-            modelBuilder.Entity("AuctionManagementAPI.Models.WatchAuction", b =>
-                {
-                    b.Property<int>("WatchAuctionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WatchAuctionId"));
-
-                    b.Property<int>("AuctionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("BidId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("WatchAuctionId");
-
-                    b.HasIndex("AuctionId");
-
-                    b.HasIndex("BidId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("WatchAuctions");
                 });
 
             modelBuilder.Entity("PermissionUserRole", b =>
@@ -1110,8 +1060,7 @@ namespace AuctionManagementAPI.Migrations
                 {
                     b.HasOne("AuctionManagementAPI.Models.Category", "ParentCategory")
                         .WithMany("SubCategories")
-                        .HasForeignKey("ParentCategoryId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("ParentCategoryId");
 
                     b.Navigation("ParentCategory");
                 });
@@ -1235,31 +1184,6 @@ namespace AuctionManagementAPI.Migrations
                         .HasForeignKey("AuctionManagementAPI.Models.UserProfile", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("AuctionManagementAPI.Models.WatchAuction", b =>
-                {
-                    b.HasOne("AuctionManagementAPI.Models.Auction", "Auction")
-                        .WithMany()
-                        .HasForeignKey("AuctionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AuctionManagementAPI.Models.Bid", "Bid")
-                        .WithMany()
-                        .HasForeignKey("BidId");
-
-                    b.HasOne("AuctionManagementAPI.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Auction");
-
-                    b.Navigation("Bid");
 
                     b.Navigation("User");
                 });
