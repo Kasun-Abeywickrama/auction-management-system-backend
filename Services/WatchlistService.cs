@@ -52,11 +52,12 @@ namespace AuctionManagementAPI.Services
         {
             return await _context.WatchAuctions
                 .Include(w => w.Auction)
+                .ThenInclude(a => a.Product)
                 .Where(w => w.UserId == userId)
                 .ToListAsync();
         }
 
-        public async Task<string> DeleteWishlistItemAsync(int userId, int watchAuctionId)
+        public async Task<string> DeleteWatchlistItemAsync(int userId, int watchAuctionId)
         {
             // check if the bid exists
             var item = await _context.WatchAuctions.FirstOrDefaultAsync(x => x.UserId == userId && x.WatchAuctionId == watchAuctionId);
@@ -69,7 +70,7 @@ namespace AuctionManagementAPI.Services
             _context.WatchAuctions.Remove(item);
             await _context.SaveChangesAsync();
 
-            return "Wishlist Item was deleted successfully";
+            return "Watchlist Item was deleted successfully";
 
         }
     }

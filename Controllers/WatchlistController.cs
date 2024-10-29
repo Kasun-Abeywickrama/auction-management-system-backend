@@ -66,7 +66,7 @@ namespace AuctionManagementAPI.Controllers
             }
             else
             {
-                return NotFound("Wishlist not found for this user.");
+                return NotFound("Watchlist not found for this user.");
             }
         }
 
@@ -86,8 +86,8 @@ namespace AuctionManagementAPI.Controllers
             // convert the user id to an integer
             int uId = Int32.Parse(userId);
 
-            var result = await _watchlistService.DeleteWishlistItemAsync(uId, watchAuctionId);
-            if (result.Contains("Wishlist Item was deleted successfully"))
+            var result = await _watchlistService.DeleteWatchlistItemAsync(uId, watchAuctionId);
+            if (result.Contains("Watchlist Item was deleted successfully"))
             {
                 return Ok(result);
             }
