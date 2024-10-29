@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AuctionManagementAPI.Controllers
 {
-    [Route("api/auctions")]
+    [Route("api/Auctions")]
     [ApiController]
     public class AuctionController : ControllerBase
     {
