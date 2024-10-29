@@ -95,4 +95,82 @@ public class CategoryImageService
         await _context.SaveChangesAsync();
         return true;
     }
+
+
+
+    public async Task<string> SaveCategoryLogoAsync(int categoryId, IFormFile logoFile)
+    {
+        if (logoFile == null || logoFile.Length == 0)
+            throw new ArgumentException("Invalid logo file.");
+
+        var uploadsFolder = Path.Combine(_environment.WebRootPath, "category-logos", categoryId.ToString());
+        Directory.CreateDirectory(uploadsFolder); // Ensure the folder exists
+
+        var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(logoFile.FileName);
+        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+        using (var fileStream = new FileStream(filePath, FileMode.Create))
+        {
+            await logoFile.CopyToAsync(fileStream);
+        }
+
+        // Return the relative URL to the saved logo
+        return $"/category-logos/{categoryId}/{uniqueFileName}";
+    }
+
+    public async Task<bool> SaveLogoUrlsToDatabaseAsync(int categoryId, List<string> logoUrls)
+    {
+        var category = await _context.Categories.FindAsync(categoryId);
+        if (category == null)
+            return false;
+
+        if (category.LogoImageUrls == null)
+            category.LogoImageUrls = new List<string>();
+
+        category.LogoImageUrls.AddRange(logoUrls);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> DeleteCategoryLogoAsync(int categoryId, string logoName)
+    {
+        var uploadsFolder = Path.Combine(_environment.WebRootPath, "category-logos", categoryId.ToString());
+        var filePath = Path.Combine(uploadsFolder, logoName);
+
+        if (!File.Exists(filePath))
+            return false;
+
+        try
+        {
+            File.Delete(filePath);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> DeleteCategoryLogoFromDBAsync(int categoryId, string logoName)
+    {
+        var category = await _context.Categories.FindAsync(categoryId);
+        if (category == null)
+            return false;
+
+        if (category.LogoImageUrls == null || category.LogoImageUrls.Count == 0)
+            return false;
+
+        var logoUrl = $"/category-logos/{categoryId}/{logoName}";
+
+        if (!category.LogoImageUrls.Contains(logoUrl))
+            return false;
+
+        category.LogoImageUrls.Remove(logoUrl);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+
+
+
 }
