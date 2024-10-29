@@ -7,6 +7,7 @@ namespace AuctionManagementAPI.Models
         public int CategoryId { get; set; }
         public required string Name { get; set; }
         public string? Description { get; set; }
+        public List<string>? ImageUrls { get; set; }
 
         // Navigation properties
         public ICollection<Product>? Products { get; set; }
