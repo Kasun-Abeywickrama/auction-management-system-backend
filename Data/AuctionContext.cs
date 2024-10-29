@@ -25,6 +25,8 @@ namespace AuctionManagementAPI.Data
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
         public DbSet<Otp> Otps { get; set; }
+        public DbSet<WatchAuction> WatchAuctions { get; set; }
+
 
         public DbSet<ShippingDetails> ShippingDetails { get; set; }
 
