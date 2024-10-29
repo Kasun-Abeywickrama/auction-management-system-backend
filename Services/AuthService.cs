@@ -243,6 +243,7 @@ namespace AuctionManagementAPI.Services
             string hashedPassword = _tokenService.HashPassword(resetPasswordDTO.NewPassword, out salt);
 
             user.Password = hashedPassword;
+            user.IsVerified = true;
             user.PasswordSalt = salt;
             _context.Users.Update(user);
 
