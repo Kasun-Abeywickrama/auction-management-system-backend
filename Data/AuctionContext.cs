@@ -160,6 +160,18 @@ namespace AuctionManagementAPI.Data
                 .HasForeignKey<ShippingDetails>(b => b.BidId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // WatchAuction and User have a many-to-many relationship
+            modelBuilder.Entity<WatchAuction>()
+                .HasMany(w => w.Users)
+                .WithMany(u => u.WatchAuctions)
+                .UsingEntity(j => j.ToTable("UserWatchAuctions"));
+
+            // Auction and WatchAuction have a one-to-many relationship 
+            modelBuilder.Entity<Auction>()
+                .HasMany(a => a.WatchAuctions)
+                .WithOne(w => w.Auction)
+                .HasForeignKey(w => w.AuctionId);
+
 
 
             // Seed the buyer and admin roles
