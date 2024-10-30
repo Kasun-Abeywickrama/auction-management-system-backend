@@ -31,7 +31,7 @@ namespace AuctionManagementAPI.Models.DTOs.AuctionDTOs
         [Required(ErrorMessage = "End time is required.")]
         public DateTime EndTime { get; set; }
 
-        public bool? IsSold { get; set; }
+        //public bool? IsSold { get; set; }
 
         [Required(ErrorMessage = "Shipping method is required.")]
         public required string ShippingMethod { get; set; }
