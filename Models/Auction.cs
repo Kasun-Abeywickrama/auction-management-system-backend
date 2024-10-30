@@ -23,6 +23,7 @@ namespace AuctionManagementAPI.Models
         public ICollection<Bid>? Bids { get; set; }
         public AuctionSchedule? AuctionSchedule { get; set; }
         public ICollection<Lable>? Lables { get; set; }
+        public ICollection<WatchAuction>? WatchAuctions { get; set; }
 
         //[JsonIgnore]
         public Product? Product { get; set; }

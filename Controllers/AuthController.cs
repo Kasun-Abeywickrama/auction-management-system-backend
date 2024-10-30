@@ -31,7 +31,12 @@ namespace AuctionManagementAPI.Controllers
             }
 
             var token = _tokenService.GenerateToken(user);
-            return Ok(new { token });
+
+            // return token, role, firstname and lastname
+            return Ok(new { token, user.UserRole?.Role, user.FirstName, user.LastName });
+
+
+            //return Ok(new { token });
         }
 
         [HttpPost("Register")]
