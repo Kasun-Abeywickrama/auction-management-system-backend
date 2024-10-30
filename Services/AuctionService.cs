@@ -70,7 +70,7 @@ namespace AuctionManagementAPI.Services
                 StartingBid = createAuctionDTO.StartingBid,
                 StartTime = createAuctionDTO.StartTime,
                 EndTime = createAuctionDTO.EndTime,
-                IsSold = createAuctionDTO.IsSold,
+                IsSold = false,
                 ShippingMethod = createAuctionDTO.ShippingMethod,
                 PackageWeight = createAuctionDTO.PackageWeight,
                 PackageDimension = createAuctionDTO.PackageDimension,

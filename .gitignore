@@ -14,5 +14,8 @@ Release/
 appsettings.json 
 
 wwwroot/product-images/
+wwwroot/category-logos/
+wwwroot/category-images/
+
 
 
