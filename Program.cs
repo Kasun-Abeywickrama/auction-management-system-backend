@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using AuctionManagementAPI.Data;
+using AuctionManagementAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,11 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+
+// Register EmailSettings configuration
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
 
 // Register services for dependency injection
 builder.Services.AddScoped<AuthService>();
