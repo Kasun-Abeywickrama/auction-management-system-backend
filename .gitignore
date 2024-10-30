@@ -12,3 +12,7 @@ Release/
 
 # hide appsettings.json
 appsettings.json 
+
+wwwroot/product-images/
+
+
