@@ -35,7 +35,6 @@ namespace AuctionManagementAPI.Services
             // create a new watchItem
             var watchlistItem = new WatchAuction
             {
-                User = user,
                 UserId = userId,
                 Auction = auction,
                 AuctionId = auction.AuctionId

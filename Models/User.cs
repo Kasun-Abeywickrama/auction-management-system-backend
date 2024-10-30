@@ -21,6 +21,7 @@
         public ICollection<Notification>? Notifications { get; set; }
         public ICollection<ActivityLog>? ActivityLogs { get; set; }
         public ICollection<Otp>? Otps { get; set; }
+        public ICollection<WatchAuction>? WatchAuctions { get; set; }
 
         // new
         public ICollection<ShippingDetails>? ShippingDetails { get; set; }

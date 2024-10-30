@@ -6,13 +6,13 @@
         public int WatchAuctionId { get; set; }
 
         // Navigation properties
-        public Auction? Auction { get; set; }
         public Bid? Bid { get; set; }
-        public required User User { get; set; }
+        public ICollection<User>? Users { get; set; }
+        public Auction? Auction { get; set; }
 
 
         // Foreign key
-        public int AuctionId { get; set; }
-        public int UserId { get; set; }
+        public required int AuctionId { get; set; }
+        public required int UserId { get; set; }
     }
 }
