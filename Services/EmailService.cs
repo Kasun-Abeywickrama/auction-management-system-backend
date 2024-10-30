@@ -67,12 +67,12 @@ namespace AuctionManagementAPI.Services
             }
         }
 
-        public void SendEmail(int userId, string subject, string body)
+        public async Task<string> SendEmailAsync(int userId, string subject, string body)
         {
             var user = _context.Users.Find(userId);
             if (user == null)
             {
-                return;
+                return null;
             }
 
             var fromAddress = new MailAddress(_emailSettings.SmtpUsername, _emailSettings.FromName);
@@ -95,6 +95,8 @@ namespace AuctionManagementAPI.Services
             {
                 smtpClient.Send(message);
             }
+
+            return "Email sent successfully";
         }
     }
 }

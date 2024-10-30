@@ -11,14 +11,16 @@ namespace AuctionManagementAPI.Services
         private readonly AuctionContext _context;
         private readonly TokenService _tokenService;
         private readonly EmailService _emailService;
+        private readonly NotificationService _notificationService;
 
-        public AuthService(AuctionContext context, TokenService tokenService, EmailService emailService)
+        public AuthService(AuctionContext context, TokenService tokenService, EmailService emailService, NotificationService notificationService)
         {
             _context = context;
             _tokenService = tokenService;
             _emailService = emailService;
+            _notificationService = notificationService;
         }
-
+       
         public async Task<User?> LoginAsync(LoginDto loginDTO)
         {
             // check if user exists
@@ -60,6 +62,17 @@ namespace AuctionManagementAPI.Services
 
             // update last login date and reset failed login attempts for successful login
             user.LastLogin = DateTime.Now;
+
+            // make a notification for the user
+            var notification = new Notification
+            {
+                UserId = user.UserId,
+                NotificationType = "Login",
+                Title = "Login",
+                Message = "You have successfully logged in at " + DateTime.Now,
+                Timestamp = DateTime.Now
+            };
+            await _notificationService.MakeNotificationWithEmailAsync(notification);
 
             // reset failed login attempts
             if (user.FailedLoginAttempts > 0)
