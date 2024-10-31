@@ -3,6 +3,7 @@ using AuctionManagementAPI.Migrations;
 using AuctionManagementAPI.Models;
 using AuctionManagementAPI.Models.DTOs.PaymentDTOs;
 using Microsoft.EntityFrameworkCore;
+using static AuctionManagementAPI.Models.DTOs.PaymentDTOs.TransactionDTO;
 
 namespace AuctionManagementAPI.Services
 {
@@ -11,11 +12,11 @@ namespace AuctionManagementAPI.Services
         public readonly AuctionContext _context;
 
         public PaymentService(AuctionContext context)
-        { 
-           _context = context;
+        {
+            _context = context;
         }
 
-        public async Task<string> AddShippingDetailsAsync (ShippingDetailsDTO shippingDetailsDTO, int userId)
+        public async Task<string> AddShippingDetailsAsync(ShippingDetailsDTO shippingDetailsDTO, int userId)
         {
 
             // check if shipping details already exists
@@ -56,7 +57,7 @@ namespace AuctionManagementAPI.Services
             };
 
             // add shipping Details to the database
-            await _context.ShippingDetails.AddAsync (newShippingDetails);
+            await _context.ShippingDetails.AddAsync(newShippingDetails);
             await _context.SaveChangesAsync();
 
             return "Shipping Details Added successfully!";
@@ -97,5 +98,34 @@ namespace AuctionManagementAPI.Services
 
             return shippingDetails;
         }
+
+        public async Task<decimal?> GetTotalAmountAsync()
+        {
+            // Retrieve the latest bid along with its associated auction and product
+            var latestBid = await _context.Bids
+                .OrderByDescending(b => b.TimeStamp)
+                .Include(b => b.Auction) // Include the related Auction
+                    .ThenInclude(a => a.Product) // Include the related Product from Auction
+                .Select(b => new
+                {
+                    b.BidAmount,
+                    ShippingFee = b.Auction.Product.Shippingfee // Get the shipping fee from the product
+                })
+                .FirstOrDefaultAsync();
+
+            if (latestBid == null)
+            {
+                return null; // No latest bid found
+            }
+
+            // Calculate the total amount
+            var totalAmount = latestBid.BidAmount + latestBid.ShippingFee;
+            return totalAmount;
+        }
+
+        
+
     }
 }
+
+      
