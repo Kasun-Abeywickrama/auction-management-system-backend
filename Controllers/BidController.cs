@@ -22,11 +22,8 @@ namespace AuctionManagementAPI.Controllers
         }
 
 
-
-
-
         // api to create a bid
-        [HttpPost("CreateBid/{auctionId}")]
+        [HttpPost("CreateBid")]
         [Authorize]
         public async Task<IActionResult> CreateBid([FromBody] CreateBidDTO createBidDTO) 
         {
@@ -49,6 +46,7 @@ namespace AuctionManagementAPI.Controllers
             }
             return BadRequest(result);
         }
+
 
 
         [HttpGet("GetMyBids")]
@@ -98,8 +96,10 @@ namespace AuctionManagementAPI.Controllers
             return BadRequest("User profile not found");
         }
 
+
+
         //api to delete a bid
-        [HttpDelete("DeleteBid/{bidId}")]
+        [HttpDelete("DeleteBid")]
         [Authorize]
         public async Task<IActionResult> DeleteBid(int bidId)
         {
@@ -122,6 +122,8 @@ namespace AuctionManagementAPI.Controllers
             }
             return BadRequest(result);
         }
+
+
 
         // api to update a bid
         // Update the bid amount for a specific bid
@@ -149,7 +151,9 @@ namespace AuctionManagementAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("GetHighestBid/{auctionId}")]
+
+
+        [HttpGet("GetHighestBid")]
         [Authorize]
         public async Task<IActionResult> GetHighestBid(int auctionId)
         {
@@ -157,13 +161,17 @@ namespace AuctionManagementAPI.Controllers
             return Ok(highestBidAmount);
         }
 
-        [HttpGet("GetBidCount/{auctionId}")]
+
+
+        [HttpGet("GetBidCount")]
         [Authorize]
         public async Task<IActionResult> GetBidCount(int auctionId)
         {
             var bidCount = await _bidService.GetBidCountForAuctionAsync(auctionId);
             return Ok(bidCount);
         }
+
+
 
     }
 }
