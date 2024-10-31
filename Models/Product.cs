@@ -16,5 +16,7 @@
         // Foreign key
         public int CategoryId { get; set; }
 
+
+
     }
 }
