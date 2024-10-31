@@ -49,10 +49,14 @@ namespace AuctionManagementAPI.Services
         // Get wishlist by user ID
         public async Task<List<WatchAuction>> GetWatchlistByUserIdAsync(int userId)
         {
-            return await _context.WatchAuctions
+            // get the auction with product details and then get the Watchlist and retun all details by combining.
+            var watchlist = await _context.WatchAuctions
                 .Include(w => w.Auction)
+                .ThenInclude(a => a.Product)
                 .Where(w => w.UserId == userId)
                 .ToListAsync();
+
+            return watchlist;
         }
 
         public async Task<string> DeleteWishlistItemAsync(int userId, int watchAuctionId)
