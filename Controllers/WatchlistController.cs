@@ -21,8 +21,8 @@ namespace AuctionManagementAPI.Controllers
             this._watchlistService = watchlistService;
         }
 
-      
-        [HttpPost("AddWatchAuction/{auctionId}")]
+
+        [HttpPost("AddWatchAuction")]
         [Authorize]
         public async Task<IActionResult> AddToWatchlist([FromBody] CreateWatchAuctionDTO createWatchAuctionDTO)
         {
@@ -44,8 +44,9 @@ namespace AuctionManagementAPI.Controllers
             return BadRequest(result);
         }
 
-       
+
         [HttpGet("MyWatchlist")]
+        [Authorize]
         public async Task<IActionResult> GetWatchlistByUserIdAsync()
         {
             // get the user id from the token
@@ -70,7 +71,8 @@ namespace AuctionManagementAPI.Controllers
             }
         }
 
-        [HttpDelete("DeleteWatchlistItem/{watchAuctionId}")]
+
+        [HttpDelete("DeleteWatchlistItem")]
         [Authorize]
         public async Task<IActionResult> DeleteBid(int watchAuctionId)
         {

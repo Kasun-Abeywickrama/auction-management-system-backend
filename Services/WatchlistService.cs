@@ -57,15 +57,14 @@ namespace AuctionManagementAPI.Services
 
         public async Task<string> DeleteWishlistItemAsync(int userId, int watchAuctionId)
         {
-            // check if the bid exists
-            var item = await _context.WatchAuctions.FirstOrDefaultAsync(x => x.UserId == userId && x.WatchAuctionId == watchAuctionId);
-            if (item == null)
-            {
-                return "Item was not found";
-            }
+            // get the watchAuction item using the userId and watchAuctionId
+            var watchAuction = await _context.WatchAuctions.FirstOrDefaultAsync(w => w.UserId == userId && w.WatchAuctionId == watchAuctionId);
 
-            // remove the bid from the database
-            _context.WatchAuctions.Remove(item);
+            if (watchAuction == null)
+                return "Wishlist Item not found";
+
+            // remove the watchAuction item
+            _context.WatchAuctions.Remove(watchAuction);
             await _context.SaveChangesAsync();
 
             return "Wishlist Item was deleted successfully";

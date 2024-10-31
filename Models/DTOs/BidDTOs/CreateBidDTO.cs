@@ -6,7 +6,7 @@
 
         public DateTime TimeStamp { get; set; }
 
-        public int AuctionId { get; set; }
+        public required int AuctionId { get; set; }
 
 
     }
