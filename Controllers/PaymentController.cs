@@ -1,4 +1,6 @@
-﻿using AuctionManagementAPI.Models.DTOs.PaymentDTOs;
+﻿using AuctionManagementAPI.Models.DTOs.CategoryDTOs;
+using AuctionManagementAPI.Models;
+using AuctionManagementAPI.Models.DTOs.PaymentDTOs;
 using AuctionManagementAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using static AuctionManagementAPI.Models.DTOs.PaymentDTOs.TransactionDTO;
+using PayPal.Api;
 
 
 namespace AuctionManagementAPI.Controllers
@@ -116,7 +119,9 @@ namespace AuctionManagementAPI.Controllers
             return Ok(totalAmount);
         }
 
+
         
+
 
     }
 }

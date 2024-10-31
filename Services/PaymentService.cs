@@ -64,7 +64,6 @@ namespace AuctionManagementAPI.Services
 
         }
 
-
         public async Task<string> UpdateShippingDetailsAsync(ShippingDetailsDTO shippingDetailsDTO, int userId)
         {
             // check if Shipping Details exists
@@ -122,6 +121,9 @@ namespace AuctionManagementAPI.Services
             var totalAmount = latestBid.BidAmount + latestBid.ShippingFee;
             return totalAmount;
         }
+
+       
+
 
         
 
