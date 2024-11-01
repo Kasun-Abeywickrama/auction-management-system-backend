@@ -3,6 +3,7 @@ using AuctionManagementAPI.Models;
 using AuctionManagementAPI.Models.DTOs.AuthDTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Security.Cryptography;
 
 namespace AuctionManagementAPI.Services
 {
@@ -348,6 +349,42 @@ namespace AuctionManagementAPI.Services
         {
             // retun only the permission names
             return await _context.Permissions.ToListAsync();
+        }
+
+
+        // change to the user role to seller
+        public async Task<string> ChangeUserRoleToSellerAsync(int userId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null)
+            {
+                return null;
+            }
+
+            var sellerRole = _context.UserRoles.FirstOrDefault(r => r.Role == "seller");
+            if (sellerRole == null)
+            {
+                return null;
+            }
+
+            user.UserRoleId = sellerRole.UserRoleId;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            //create a notification object the send notification to the user using the function MakeNotificationWithEmailAsync of notification service
+            Notification notification = new Notification
+            {
+                UserId = userId,
+                NotificationType = "Login",
+                Title = "Role changed",
+                Message = "Your role has been changed to seller. Please sign in again to continue.",
+                Timestamp = DateTime.Now
+
+            };
+
+            await _notificationService.MakeNotificationWithEmailAsync(notification);
+
+            return "Role changed to seller successfully.";
         }
 
     }
