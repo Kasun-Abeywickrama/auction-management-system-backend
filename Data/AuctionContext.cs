@@ -177,7 +177,8 @@ namespace AuctionManagementAPI.Data
             // Seed the buyer and admin roles
             modelBuilder.Entity<UserRole>().HasData(
                 new UserRole { UserRoleId = 1, Role = "admin" },
-                new UserRole { UserRoleId = 2, Role = "buyer" }
+                new UserRole { UserRoleId = 2, Role = "buyer" },
+                new UserRole { UserRoleId = 3, Role = "seller" }
             );
 
             // Seed an admin user with pre-hashed password and salt

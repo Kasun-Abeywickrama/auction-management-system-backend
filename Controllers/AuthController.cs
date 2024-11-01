@@ -1,4 +1,5 @@
 ﻿using AuctionManagementAPI.Attributes;
+using AuctionManagementAPI.Models;
 using AuctionManagementAPI.Models.DTOs.AuthDTOs;
 using AuctionManagementAPI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -189,6 +190,44 @@ namespace AuctionManagementAPI.Controllers
                 return Ok(result);
             }
             return BadRequest("No permissions found.");
+        }
+
+
+
+        // change to the user role to seller put method
+
+        [HttpPut("ChangeUserRoleToSeller")]
+        [Authorize] 
+        public async Task<IActionResult> ChangeUserRoleToSeller()
+        {
+
+            // Extract UserId and Role from token claims
+            var userId = User.FindFirstValue("UserId");
+            var role = User.FindFirstValue("Role");
+
+            if (userId == null || role == null)
+            {
+                return BadRequest("User not found");
+            }
+
+            if (role == "seller")
+            {
+                return Ok("User is already a seller");
+            }
+
+
+            // convert the user id to an integer
+            int uId = Int32.Parse(userId);
+
+            
+            var result = await _authService.ChangeUserRoleToSellerAsync(uId);
+            if (result != null)
+            {
+               
+                return Ok(result);
+            }
+            return BadRequest(result);
+            
         }
 
 
